@@ -16,7 +16,7 @@ return {
   {
     "WhoIsSethDaniel/mason-tool-installer.nvim",
     dependencies = { "williamboman/mason.nvim" },
-    event = "VeryLazy",
+    lazy = false,
     opts = {
       run_on_start = true,
       ensure_installed = {
@@ -31,7 +31,7 @@ return {
         "rust-analyzer",
 
         "stylua",
-        "pint",
+        -- "pint", -- Not installing compose and php outside of docker for now
         "prettier",
         "blade-formatter",
         "beautysh",
