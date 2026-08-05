@@ -9,6 +9,13 @@ end
 
 local function has_filename() return vim.fn.expand "%:t" ~= "" end
 
+local function pending_keys()
+  local which_key = package.loaded["which-key.state"]
+  local state = which_key and which_key.state
+  local keys = state and state.node and state.node.keys or ""
+  return keys ~= "" and (" " .. keys .. " ") or ""
+end
+
 local function get_hl(group, attr)
   local hl = vim.api.nvim_get_hl(0, { name = group, link = false })
   if attr == "fg" then return hl.fg and string.format("#%06x", hl.fg) or nil end
@@ -70,7 +77,7 @@ local cmd_info = {
     hl = { fg = "#9ECE6A" },
   },
   {
-    provider = "%S",
+    provider = pending_keys,
   },
 }
 
