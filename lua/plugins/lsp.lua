@@ -33,9 +33,18 @@ local server_settings = {
     cmd = { "devsense-php-ls", "--stdio" },
     filetypes = { "php", "blade" },
     root_markers = { "composer.json", ".git" },
-        init_options = {
-          ["0"] = vim.fn.readfile(vim.fn.expand("~/.keys/DEVSENSE"))[1] or "",
+    -- Neovim disables dynamic file watching on Linux by default. PHP Tools
+    -- relies on it to notice generated helpers and other out-of-editor edits.
+    capabilities = {
+      workspace = {
+        didChangeWatchedFiles = {
+          dynamicRegistration = true,
+        },
       },
+    },
+    init_options = {
+      ["0"] = vim.fn.readfile(vim.fn.expand("~/.keys/DEVSENSE"))[1] or "",
+    },
   },
   jsonls = {
     handlers = {
