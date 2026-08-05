@@ -2,11 +2,25 @@ return {
   "stevearc/resession.nvim",
   lazy = true,
   opts = {
+    options = {
+      "binary",
+      "bufhidden",
+      "buflisted",
+      "diff",
+      "filetype",
+      "modifiable",
+      "previewwindow",
+      "readonly",
+      "scrollbind",
+      "winfixheight",
+      "winfixwidth",
+    },
     buf_filter = function(bufnr) return require("util.buffer").is_valid(bufnr) end,
     tab_buf_filter = function(tabpage, bufnr) return vim.tbl_contains(vim.t[tabpage].bufs or {}, bufnr) end,
   },
   config = function(_, opts)
     local resession = require "resession"
+    local configured_cmdheight = vim.o.cmdheight
     resession.setup(opts)
 
     vim.api.nvim_create_autocmd("VimLeavePre", {
