@@ -217,8 +217,8 @@ au("ColorScheme", {
 })
 
 vim.g.theme_sync = {
-  dark = { colorscheme = "min-theme" },
-  light = { colorscheme = "gruvbox" },
+  dark = { colorscheme = "catppuccin-frappe" },
+  light = { colorscheme = "catppuccin-latte" },
   highlights = {
     nordic = {
       dark = {
