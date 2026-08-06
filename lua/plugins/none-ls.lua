@@ -37,7 +37,7 @@ return {
         },
       },
       on_attach = function(client, bufnr)
-        if client.supports_method "textDocument/formatting" then
+        if client:supports_method("textDocument/formatting", bufnr) then
           local group = vim.api.nvim_create_augroup("null_ls_format_" .. bufnr, { clear = true })
           vim.api.nvim_create_autocmd("BufWritePre", {
             group = group,

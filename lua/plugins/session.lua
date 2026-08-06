@@ -20,7 +20,6 @@ return {
   },
   config = function(_, opts)
     local resession = require "resession"
-    local configured_cmdheight = vim.o.cmdheight
     resession.setup(opts)
 
     vim.api.nvim_create_autocmd("VimLeavePre", {
