@@ -13,11 +13,11 @@ hinting = "full"
 edging = "antialias"
 
 [[font.normal]]
-family = "Iosevka"
+family = "Geist Mono"
 style = "W500"
 
 [[font.bold]]
-family = "Iosevka"
+family = "Geist Mono"
 style = "W700"
 
 # fallback font
@@ -26,4 +26,4 @@ family = "Vazir Code Hack"
 style = "Normal"
 
 [font.features]
-Iosevka = ["+ss05", "CLIK", "JSPT", "PHPX"]
+"Geist Mono" = ["+ss02", "+ss03", "+ss06", "+ss09", "+ss11"]
