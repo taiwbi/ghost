@@ -24,5 +24,6 @@ style = "W700"
 [[font.normal]]
 family = "Vazir Code Hack"
 style = "Normal"
+
 [font.features]
 "Geist Mono" = ["+ss02", "+ss03", "+ss06", "+ss09", "+ss11"]
