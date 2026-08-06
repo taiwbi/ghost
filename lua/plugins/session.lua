@@ -22,6 +22,18 @@ return {
     local resession = require "resession"
     resession.setup(opts)
 
+    resession.add_hook("pre_load", function()
+      for _, win in ipairs(vim.api.nvim_list_wins()) do
+        local buf = vim.api.nvim_win_get_buf(win)
+        if vim.bo[buf].filetype == "snacks_dashboard" then
+          -- Snacks restores this asynchronously when the dashboard closes, but
+          -- Resession restores window heights synchronously during that gap.
+          vim.o.laststatus = 3
+          break
+        end
+      end
+    end)
+
     vim.api.nvim_create_autocmd("VimLeavePre", {
       group = vim.api.nvim_create_augroup("user_resession_autosave", { clear = true }),
       callback = function()
