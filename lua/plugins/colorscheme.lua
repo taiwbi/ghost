@@ -1,6 +1,7 @@
 return {
   {
     "rebelot/kanagawa.nvim",
+    lazy = true,
     priority = 1000,
     config = function()
       require("kanagawa").setup {
@@ -57,12 +58,12 @@ return {
   },
   {
     "zenbones-theme/zenbones.nvim",
+    lazy = true,
     dependencies = "rktjmp/lush.nvim",
-    lazy = false,
     priority = 1000,
   },
-  { "nyoom-engineering/oxocarbon.nvim" },
-  { "datsfilipe/min-theme.nvim" },
+  { "nyoom-engineering/oxocarbon.nvim", lalzy = true },
+  { "datsfilipe/min-theme.nvim", lazy = true },
   {
     "art220/dancheong.nvim",
     lazy = false,
