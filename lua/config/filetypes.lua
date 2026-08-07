@@ -9,6 +9,7 @@ vim.filetype.add {
     [".*/etc/foo/.*"] = "fooscript",
     [".*/ghostty/config"] = "toml",
     [".*/vscode/.*.json"] = "jsonc",
+    [".*/zed/.*.json"] = "jsonc",
     [".*%.blade%.php"] = "blade",
   },
 }
