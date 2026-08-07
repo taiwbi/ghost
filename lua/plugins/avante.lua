@@ -30,6 +30,11 @@ return {
         endpoint = "https://openrouter.ai/api/v1",
         api_key_name = "OPENROUTER_API_KEY",
         model = "openai/gpt-5.6-luna",
+        extra_request_body = {
+          provider = {
+            sort = "price",
+          },
+        },
       },
     },
     behaviour = {
