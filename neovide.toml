@@ -8,17 +8,15 @@ frame = "none"
 
 # --- Fonts ---
 [font]
-size = 12
+size = 13
 hinting = "full"
 edging = "antialias"
 
 [[font.normal]]
-family = "Geist Mono"
-style = "W500"
+family = "CommitMono"
 
 [[font.bold]]
-family = "Geist Mono"
-style = "W700"
+family = "CommitMono"
 
 # fallback font
 [[font.normal]]
