@@ -63,4 +63,9 @@ return {
   },
   { "nyoom-engineering/oxocarbon.nvim" },
   { "datsfilipe/min-theme.nvim" },
+  {
+    "art220/dancheong.nvim",
+    lazy = false,
+    priority = 1000,
+  },
 }
