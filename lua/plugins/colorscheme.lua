@@ -62,7 +62,6 @@ return {
     dependencies = "rktjmp/lush.nvim",
     priority = 1000,
   },
-  { "nyoom-engineering/oxocarbon.nvim", lalzy = true },
   { "datsfilipe/min-theme.nvim", lazy = true },
   {
     "art220/dancheong.nvim",
