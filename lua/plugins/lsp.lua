@@ -32,7 +32,11 @@ local server_settings = {
   phptools = {
     cmd = { "devsense-php-ls", "--stdio" },
     filetypes = { "php", "blade" },
-    root_markers = { "composer.json", ".git" },
+    root_dir = function(bufnr, on_dir)
+      local filename = vim.api.nvim_buf_get_name(bufnr)
+      local root = vim.fs.root(filename, { "composer.json", ".git" })
+      on_dir(root or vim.fs.dirname(filename))
+    end,
     -- Neovim disables dynamic file watching on Linux by default. PHP Tools
     -- relies on it to notice generated helpers and other out-of-editor edits.
     capabilities = {
@@ -92,6 +96,24 @@ local function setup_diagnostics()
 end
 
 local function on_attach(client, bufnr)
+  if client.name == "phptools" then
+    vim.keymap.set("n", "K", function()
+      local php_client = vim.lsp.get_clients({ bufnr = bufnr, name = "phptools" })[1]
+      if not php_client then
+        vim.lsp.buf.hover()
+        return
+      end
+
+      local win = vim.api.nvim_get_current_win()
+      php_client:request(
+        "textDocument/hover",
+        vim.lsp.util.make_position_params(win, php_client.offset_encoding),
+        vim.lsp.handlers.hover,
+        bufnr
+      )
+    end, { buffer = bufnr, desc = "PHP hover" })
+  end
+
   if client.server_capabilities.documentHighlightProvider then
     local group = vim.api.nvim_create_augroup("lsp_document_highlight_" .. bufnr, { clear = true })
     vim.api.nvim_create_autocmd("CursorHold", {
@@ -131,7 +153,9 @@ return {
   },
   {
     "neovim/nvim-lspconfig",
-    event = { "BufReadPre", "BufNewFile" },
+    -- Load before the first buffer is read so native `vim.lsp.enable()` can
+    -- attach PHP Tools (and the other servers) to that initial buffer.
+    lazy = false,
     dependencies = {
       "folke/neoconf.nvim",
       {
