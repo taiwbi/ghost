@@ -240,9 +240,21 @@ return {
   end,
   config = function(_, opts)
     require("heirline").setup(opts)
+
+    local redraw_group = vim.api.nvim_create_augroup("heirline_redraw", { clear = true })
+
     vim.api.nvim_create_autocmd("ModeChanged", {
-      group = vim.api.nvim_create_augroup("heirline_mode_redraw", { clear = true }),
+      group = redraw_group,
       callback = function() vim.cmd.redrawstatus() end,
+    })
+
+    vim.api.nvim_create_autocmd("ColorScheme", {
+      group = redraw_group,
+      desc = "Rebuild Heirline highlights after a colorscheme change",
+      callback = function()
+        require("heirline.utils").on_colorscheme()
+        vim.cmd.redrawstatus()
+      end,
     })
   end,
   specs = {
