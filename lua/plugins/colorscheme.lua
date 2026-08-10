@@ -1,7 +1,7 @@
 return {
   {
     "rebelot/kanagawa.nvim",
-    lazy = true,
+    lazy = false,
     priority = 1000,
     config = function()
       require("kanagawa").setup {
@@ -65,7 +65,7 @@ return {
   { "datsfilipe/min-theme.nvim", lazy = true },
   {
     "art220/dancheong.nvim",
-    lazy = false,
+    lazy = true,
     priority = 1000,
   },
 }
