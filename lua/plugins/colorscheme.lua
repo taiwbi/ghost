@@ -1,7 +1,7 @@
 return {
   {
     "rebelot/kanagawa.nvim",
-    lazy = false,
+    lazy = true,
     priority = 1000,
     config = function()
       require("kanagawa").setup {
@@ -67,5 +67,10 @@ return {
     "art220/dancheong.nvim",
     lazy = true,
     priority = 1000,
+  },
+  {
+    "navarasu/onedark.nvim",
+    priority = 1000,
+    lazy = false,
   },
 }
