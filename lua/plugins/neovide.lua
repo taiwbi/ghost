@@ -24,7 +24,7 @@ vim.g.neovide_cursor_trail_size = 0.02
 vim.g.neovide_hide_mouse_when_typing = true
 vim.g.neovide_cursor_smooth_blink = true
 vim.g.neovide_cursor_vfx_mode = "pixiedust"
-vim.g.neovide_cursor_vfx_particle_lifetime = 3
-vim.g.neovide_cursor_vfx_particle_density = 5
+vim.g.neovide_cursor_vfx_particle_lifetime = 5
+vim.g.neovide_cursor_vfx_particle_density = 9
 
 return {}
