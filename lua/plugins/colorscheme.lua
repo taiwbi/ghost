@@ -71,6 +71,11 @@ return {
   {
     "navarasu/onedark.nvim",
     priority = 1000,
+    lazy = true,
+  },
+  {
+    "nyoom-engineering/oxocarbon.nvim",
     lazy = false,
+    build = false,
   },
 }
