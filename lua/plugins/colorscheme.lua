@@ -75,7 +75,16 @@ return {
   },
   {
     "nyoom-engineering/oxocarbon.nvim",
-    lazy = false,
+    lazy = true,
     build = false,
+  },
+  {
+    "vague-theme/vague.nvim",
+    lazy = false,
+    opts = {
+      colors = {
+        bg = "#141414",
+      },
+    },
   },
 }
