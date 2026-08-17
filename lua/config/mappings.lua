@@ -39,6 +39,10 @@ map("n", "[t", "<Cmd>tabprevious<CR>", { desc = "Previous tab" })
 map("n", "\\", "<Cmd>split<CR>", { desc = "Horizontal split" })
 map("n", "|", "<Cmd>vsplit<CR>", { desc = "Vertical split" })
 
+-- Horizontal Scroll
+vim.keymap.set({ "n", "i", "v" }, "<S-ScrollWheelUp>", "3zh")
+vim.keymap.set({ "n", "i", "v" }, "<S-ScrollWheelDown>", "3zl")
+
 -- Window navigation (smart-splits aware)
 local function smart_split(action, fallback)
   return function()
