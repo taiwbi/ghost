@@ -201,7 +201,8 @@ Leader key is `<Space>`, local leader is `,`. [`which-key.nvim`](https://github.
 | Reset hunk                | `Leader + gr` (n / v)  |
 | Reset buffer              | `Leader + gR`          |
 | Stage hunk                | `Leader + gs` (n / v)  |
-| Stage buffer              | `Leader + gS`          |
+| Stage buffer (including untracked files) | `Leader + gS`          |
+| Unstage buffer             | `Leader + gU`          |
 | View diff                 | `Leader + gd`          |
 | Next / previous Git hunk  | `]g` / `[g`            |
 | First / last Git hunk     | `[G` / `]G`            |

@@ -1,7 +1,68 @@
+local function stage_buffer()
+  local gs = require "gitsigns"
+  local bufnr = vim.api.nvim_get_current_buf()
+  local filename = vim.api.nvim_buf_get_name(bufnr)
+  local stage_tracked_buffer = function()
+    if vim.api.nvim_buf_is_valid(bufnr) then vim.api.nvim_buf_call(bufnr, gs.stage_buffer) end
+  end
+
+  if filename == "" then return stage_tracked_buffer() end
+
+  local root = vim.fs.root(filename, { ".git" })
+  if not root then return stage_tracked_buffer() end
+
+  vim.system({ "git", "status", "--porcelain=v1", "--untracked-files=normal", "--", filename }, {
+    cwd = root,
+    text = true,
+  }, function(result)
+    if result.code ~= 0 then
+      return vim.schedule(function() vim.notify(result.stderr, vim.log.levels.ERROR) end)
+    end
+
+    if result.stdout:match "^%?%?" then
+      vim.system({ "git", "add", "--", filename }, { cwd = root }, function(add_result)
+        vim.schedule(function()
+          if add_result.code ~= 0 then
+            vim.notify(add_result.stderr, vim.log.levels.ERROR)
+          else
+            gs.refresh()
+          end
+        end)
+      end)
+    else
+      vim.schedule(stage_tracked_buffer)
+    end
+  end)
+end
+
+local function unstage_buffer()
+  local gs = require "gitsigns"
+  local filename = vim.api.nvim_buf_get_name(0)
+
+  if filename == "" then return vim.notify("Current buffer has no file", vim.log.levels.WARN) end
+
+  local root = vim.fs.root(filename, { ".git" })
+  if not root then return vim.notify("Current file is not in a Git repository", vim.log.levels.WARN) end
+
+  vim.system({ "git", "restore", "--staged", "--", filename }, { cwd = root, text = true }, function(result)
+    vim.schedule(function()
+      if result.code ~= 0 then
+        vim.notify(result.stderr, vim.log.levels.ERROR)
+      else
+        gs.refresh()
+      end
+    end)
+  end)
+end
+
 return {
   "lewis6991/gitsigns.nvim",
   enabled = vim.fn.executable "git" == 1,
   event = { "BufReadPre", "BufNewFile" },
+  init = function()
+    vim.keymap.set("n", "<Leader>gS", stage_buffer, { desc = "Stage Git buffer (including untracked)" })
+    vim.keymap.set("n", "<Leader>gU", unstage_buffer, { desc = "Unstage Git buffer" })
+  end,
   opts = {
     signs = {
       add = { text = "▎" },
@@ -33,7 +94,6 @@ return {
       map("n", "<Leader>gR", gs.reset_buffer, "Reset Git buffer")
       map("n", "<Leader>gs", gs.stage_hunk, "Stage/Unstage Git hunk")
       map("v", "<Leader>gs", function() gs.stage_hunk { vim.fn.line ".", vim.fn.line "v" } end, "Stage Git hunk")
-      map("n", "<Leader>gS", gs.stage_buffer, "Stage Git buffer")
       map("n", "<Leader>gd", gs.diffthis, "View Git diff")
 
       map("n", "[G", function() gs.nav_hunk "first" end, "First Git hunk")
