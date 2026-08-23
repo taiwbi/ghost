@@ -98,6 +98,14 @@ end
 local function on_attach(client, bufnr)
   if client.name == "phptools" then
     vim.keymap.set("n", "K", function()
+      -- Tailwind and PHP Tools can both attach to Blade buffers. Let Neovim
+      -- collect both responses so Tailwind hover works on utility classes,
+      -- while PHP Tools still provides hover information for PHP symbols.
+      if #vim.lsp.get_clients { bufnr = bufnr, name = "tailwindcss", method = "textDocument/hover" } > 0 then
+        vim.lsp.buf.hover()
+        return
+      end
+
       local php_client = vim.lsp.get_clients({ bufnr = bufnr, name = "phptools" })[1]
       if not php_client then
         vim.lsp.buf.hover()

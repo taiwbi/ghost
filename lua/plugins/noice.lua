@@ -12,6 +12,11 @@ return {
       view_warn = "mini",
     },
     lsp = {
+      hover = {
+        -- Multiple attached clients may legitimately have no hover result.
+        -- Keep the useful response without showing one notification per client.
+        silent = true,
+      },
       message = {
         enabled = true,
         view = "mini",
