@@ -81,10 +81,5 @@ return {
   {
     "vague-theme/vague.nvim",
     lazy = false,
-    opts = {
-      colors = {
-        bg = "#141414",
-      },
-    },
   },
 }

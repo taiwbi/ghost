@@ -220,6 +220,19 @@ vim.g.theme_sync = {
   dark = { colorscheme = "vague" },
   light = { colorscheme = "onedark" },
   highlights = {
+    vague = {
+      dark = {
+        SnacksPicker = { bg = "#141415" },
+        SnacksPickerBorder = { bg = "#141415" },
+        SnacksPickerSearch = { bg = "#141415" },
+        SnacksPickerTitle = { bg = "#141415" },
+        SnacksInputTitle = { bg = "#141415" },
+        FloatTitle = { bg = "#141415" },
+        WhichKeyNormal = { bg = "#141415" },
+        WhichKeyBorder = { bg = "#141415" },
+        WhichKeyTitle = { bg = "#141415" },
+      },
+    },
     nordic = {
       dark = {
         WhichKeyBorder = { bg = "#242933", fg = "#191d24" },
