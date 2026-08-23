@@ -9,6 +9,72 @@ end
 
 local function has_filename() return vim.fn.expand "%:t" ~= "" end
 
+local breadcrumb_icons = setmetatable({
+  File = "󰈙 ",
+  Module = "󰏗 ",
+  Namespace = "󰦮 ",
+  Package = "󰏗 ",
+  Class = "󰠱 ",
+  Method = "󰆧 ",
+  Property = "󰜢 ",
+  Field = "󰜢 ",
+  Constructor = " ",
+  Enum = " ",
+  Interface = " ",
+  Function = "󰊕 ",
+  Variable = "󰀫 ",
+  Constant = "󰏿 ",
+  String = "󰀬 ",
+  Number = "󰎠 ",
+  Boolean = "◩ ",
+  Array = "󰅪 ",
+  Object = "󰅩 ",
+  Key = "󰌋 ",
+  Null = "󰟢 ",
+  EnumMember = " ",
+  Struct = "󰙅 ",
+  Event = " ",
+  Operator = "󰆕 ",
+  TypeParameter = "󰊄 ",
+  Element = "󰓫 ",
+  Directive = "󰘧 ",
+}, { __index = function() return "" end })
+
+local html_tag_icons = setmetatable({
+  html = "󰗀 ",
+  head = "󰒮 ",
+  body = "󰦪 ",
+  title = "󰗀 ",
+  meta = "󰍽 ",
+  link = "󰌷 ",
+  script = "󰌨 ",
+  style = "󰟾 ",
+  main = "󰧮 ",
+  section = "󰙅 ",
+  article = "󰗀 ",
+  header = "󰶐 ",
+  footer = "󰋚 ",
+  nav = "󰛐 ",
+  aside = "󰣇 ",
+  div = "󰉋 ",
+  span = "󰉋 ",
+  p = "󰍔 ",
+  a = "󰌷 ",
+  button = "󰜄 ",
+  form = "󰟵 ",
+  input = "󰌆 ",
+  label = "󰗧 ",
+  img = "󰋩 ",
+  ul = "󰮗 ",
+  ol = "󰮗 ",
+  li = "󰍴 ",
+  table = "󰓫 ",
+  tr = "󰓫 ",
+  td = "󰓫 ",
+}, { __index = function(_, name) return name:match "^x%-" and "󰘧 " or breadcrumb_icons.Element end })
+
+local function html_tag_icon(name) return html_tag_icons[name:lower()] end
+
 local function pending_keys()
   local which_key = package.loaded["which-key.state"]
   local state = which_key and which_key.state
@@ -61,6 +127,16 @@ local file_info = {
   },
 }
 
+local git_branch = {
+  condition = function()
+    return has_filename() and vim.b.gitsigns_status_dict and vim.b.gitsigns_status_dict.head ~= nil
+  end,
+  provider = function()
+    return "   " .. vim.b.gitsigns_status_dict.head .. " "
+  end,
+  hl = { fg = "#7AA2F7" },
+}
+
 local cmd_info = {
   {
     condition = function() return vim.fn.reg_recording() ~= "" end,
@@ -81,51 +157,78 @@ local cmd_info = {
   },
 }
 
+local function treesitter_breadcrumbs()
+  local ok, node = pcall(vim.treesitter.get_node)
+  if not ok or not node then
+    local parser_ok, parser = pcall(vim.treesitter.get_parser, 0)
+    if not parser_ok or not parser then return "" end
+
+    local row, col = unpack(vim.api.nvim_win_get_cursor(0))
+    local parse_ok, trees = pcall(parser.parse, parser)
+    local tree = parse_ok and trees and trees[1]
+    node = tree and tree:root():named_descendant_for_range(row - 1, col, row - 1, col)
+    if not node then return "" end
+  end
+
+  local function child_of_type(parent, wanted)
+    for child in parent:iter_children() do
+      if child:type() == wanted then return child end
+    end
+  end
+
+  local parts = {}
+  while node do
+    local t = node:type()
+    if t == "element" then
+      local start_tag = child_of_type(node, "start_tag") or child_of_type(node, "self_closing_tag")
+      local tag_name = start_tag and child_of_type(start_tag, "tag_name")
+      if tag_name then
+        local name = vim.treesitter.get_node_text(tag_name, 0)
+        table.insert(parts, 1, html_tag_icon(name) .. name)
+      end
+    elseif t == "directive" or t == "directive_start" then
+      local name = vim.treesitter.get_node_text(node, 0):match "@([%w_]+)"
+      if name then table.insert(parts, 1, breadcrumb_icons.Directive .. name) end
+    elseif t == "section" or t:match "conditional" or t:match "loop" then
+      for child in node:iter_children() do
+        if child:type() == "directive_start" then
+          local name = vim.treesitter.get_node_text(child, 0):match "@([%w_]+)"
+          if name then table.insert(parts, 1, breadcrumb_icons.Directive .. name) end
+          break
+        end
+      end
+    elseif t:match "function" or t:match "method" or t:match "class" then
+      local name_node = node:field("name")[1] or node:field("declarator")[1]
+      if name_node then
+        local txt = vim.treesitter.get_node_text(name_node, 0)
+        if txt then
+          local kind = t:match "class" and "Class" or t:match "method" and "Method" or "Function"
+          table.insert(parts, 1, breadcrumb_icons[kind] .. txt)
+        end
+      end
+    end
+    node = node:parent()
+  end
+
+  if #parts == 0 then return "" end
+  return "  " .. table.concat(parts, "  ")
+end
+
 local breadcrumbs = {
-  condition = function()
-    local ok = pcall(require, "nvim-navic")
-    return ok and require("nvim-navic").is_available()
-  end,
+  condition = function() return vim.bo.buftype == "" end,
   init = function(self)
-    self.data = require("nvim-navic").get_data() or {}
+    local ok, navic = pcall(require, "nvim-navic")
+    self.navic = ok and navic.is_available() and navic or nil
+    self.data = self.navic and (self.navic.get_data() or {}) or {}
   end,
   provider = function(self)
-    local parts = {}
-    for _, item in ipairs(self.data) do
-      table.insert(parts, item.name)
-    end
-    if #parts == 0 then return "" end
-    return "  " .. table.concat(parts, "  ")
+    if not self.navic or #self.data == 0 then return treesitter_breadcrumbs() end
+    return "  " .. self.navic.get_location()
   end,
-  update = "CursorMoved",
+  update = { "CursorMoved", "CursorMovedI", "CursorHold", "BufEnter", "LspAttach", "LspDetach" },
 }
 
-local function lsp_breadcrumbs()
-  local ok, _ = pcall(require, "nvim-navic")
-  if ok then return breadcrumbs end
-  return {
-    provider = function()
-      local node = vim.treesitter.get_node()
-      if not node then return "" end
-      local parts = {}
-      while node do
-        local t = node:type()
-        if t:match "function" or t:match "method" or t:match "class" then
-          local row, col = node:start()
-          local name_node = node:field("name")[1] or node:field("declarator")[1]
-          if name_node then
-            local txt = vim.treesitter.get_node_text(name_node, 0)
-            if txt then table.insert(parts, 1, txt) end
-          end
-        end
-        node = node:parent()
-      end
-      if #parts == 0 then return "" end
-      return "  " .. table.concat(parts, "  ")
-    end,
-    update = { "CursorMoved", "CursorHold" },
-  }
-end
+local function lsp_breadcrumbs() return breadcrumbs end
 
 local git_diff = {
   condition = function() return vim.b.gitsigns_status_dict ~= nil end,
@@ -198,22 +301,6 @@ local nav = {
   end,
 }
 
-local mode_right = {
-  init = function(self) self.mode = current_mode() end,
-  {
-    provider = " ",
-    hl = function(self) return { fg = self.mode.color, bg = "NONE" } end,
-  },
-  {
-    provider = "",
-    hl = function(self) return { fg = self.mode.color, bg = "NONE" } end,
-  },
-  {
-    provider = function(self) return " " .. self.mode.name .. " " end,
-    hl = function(self) return { fg = MODE_FG, bg = self.mode.color, bold = true } end,
-  },
-}
-
 local fill = { provider = "%=" }
 
 return {
@@ -227,14 +314,22 @@ return {
         mode_block,
         mode_to_file_sep,
         file_info,
+        git_branch,
         cmd_info,
         fill,
-        lsp_breadcrumbs(),
         fill,
         git_diff,
         diagnostics,
         nav,
-        mode_right,
+      },
+      winbar = {
+        hl = function()
+          return {
+            fg = get_hl("WinBar", "fg") or get_hl("Normal", "fg") or "fg",
+            bg = get_hl("WinBar", "bg") or get_hl("Normal", "bg") or "bg",
+          }
+        end,
+        lsp_breadcrumbs(),
       },
     }
   end,
@@ -246,6 +341,18 @@ return {
     vim.api.nvim_create_autocmd("ModeChanged", {
       group = redraw_group,
       callback = function() vim.cmd.redrawstatus() end,
+    })
+
+    vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "LspAttach", "LspDetach" }, {
+      group = redraw_group,
+      callback = function(args)
+        vim.schedule(function() vim.cmd.redrawstatus() end)
+        if args.event == "LspAttach" then
+          for _, delay in ipairs { 100, 500 } do
+            vim.defer_fn(function() vim.cmd.redrawstatus() end, delay)
+          end
+        end
+      end,
     })
 
     vim.api.nvim_create_autocmd("ColorScheme", {
@@ -262,23 +369,39 @@ return {
       "SmiteshP/nvim-navic",
       lazy = true,
       opts = {
-        icons = setmetatable({}, { __index = function() return "" end }),
-        highlight = false,
-        separator = "  ",
+        icons = breadcrumb_icons,
+        separator = "  ",
         depth_limit = 0,
-        click = false,
+        click = true,
+        highlight = true,
       },
       init = function()
         vim.g.navic_silence = true
+        local function attach_navic(bufnr, client)
+          local navic = require "nvim-navic"
+          local clients = client and { client } or vim.lsp.get_clients { bufnr = bufnr }
+          for _, lsp_client in ipairs(clients) do
+            if lsp_client and lsp_client.server_capabilities.documentSymbolProvider then
+              navic.attach(lsp_client, bufnr)
+              return
+            end
+          end
+        end
+
         vim.api.nvim_create_autocmd("LspAttach", {
           group = vim.api.nvim_create_augroup("user_navic_attach", { clear = true }),
           callback = function(args)
             local client = vim.lsp.get_client_by_id(args.data.client_id)
-            if client and client.server_capabilities.documentSymbolProvider then
-              require("nvim-navic").attach(client, args.buf)
-            end
+            attach_navic(args.buf, client)
           end,
         })
+
+        vim.api.nvim_create_autocmd("BufEnter", {
+          group = vim.api.nvim_create_augroup("user_navic_bufenter", { clear = true }),
+          callback = function(args) attach_navic(args.buf) end,
+        })
+
+        attach_navic(vim.api.nvim_get_current_buf())
       end,
     },
   },
