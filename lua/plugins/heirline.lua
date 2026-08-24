@@ -76,10 +76,15 @@ local html_tag_icons = setmetatable({
 local function html_tag_icon(name) return html_tag_icons[name:lower()] end
 
 local function pending_keys()
+  -- which-key keeps leader mappings in a human-readable form (`<Space>`),
+  -- whereas Neovim's native showcmd renders Space as the raw `<20>` keycode.
   local which_key = package.loaded["which-key.state"]
   local state = which_key and which_key.state
   local keys = state and state.node and state.node.keys or ""
-  return keys ~= "" and (" " .. keys .. " ") or ""
+  if keys ~= "" then return " " .. keys .. " " end
+
+  -- `%S` covers non-mapping input, including counts and the `q` macro prefix.
+  return " %S "
 end
 
 local function get_hl(group, attr)
@@ -144,10 +149,13 @@ local cmd_info = {
     hl = { fg = "#E0AF68" },
   },
   {
-    condition = function() return vim.v.hlsearch == 1 and vim.fn.searchcount({ maxcount = 999, timeout = 250 }).total > 0 end,
+    condition = function()
+      local search = vim.fn.searchcount { maxcount = 999, timeout = 250 }
+      return vim.v.hlsearch == 1 and (search.total or 0) > 0
+    end,
     provider = function()
       local s = vim.fn.searchcount { maxcount = 999, timeout = 250 }
-      if s.total > 0 then return string.format(" %d/%d ", s.current, s.total) end
+      if (s.total or 0) > 0 then return string.format(" %d/%d ", s.current or 0, s.total) end
       return ""
     end,
     hl = { fg = "#9ECE6A" },

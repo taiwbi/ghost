@@ -25,7 +25,8 @@ opt.scrolloff = 3
 opt.shiftround = true
 opt.shiftwidth = 4
 opt.shortmess:append { s = true, I = true, c = true, C = true }
-opt.showcmd = false
+opt.showcmd = true
+opt.showcmdloc = "statusline"
 opt.showmode = false
 opt.showtabline = 0
 opt.signcolumn = "yes"
