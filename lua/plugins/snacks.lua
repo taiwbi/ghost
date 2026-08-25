@@ -42,18 +42,17 @@ return {
     },
     dashboard = {
       preset = {
-        header = [[One day, you will :q for the last time. Make
+        header = [[██╗              ██████╗ ██╗  ██╗ ██████╗ ███████╗████████╗
+╚██╗            ██╔════╝ ██║  ██║██╔═══██╗██╔════╝╚══██╔══╝
+ ╚██╗           ██║  ███╗███████║██║   ██║███████╗   ██║   
+ ██╔╝           ██║   ██║██╔══██║██║   ██║╚════██║   ██║   
+██╔╝███████╗    ╚██████╔╝██║  ██║╚██████╔╝███████║   ██║   
+╚═╝ ╚══════╝     ╚═════╝ ╚═╝  ╚═╝ ╚═════╝ ╚══════╝   ╚═╝   
+                                                           
+One day, you will :q for the last time. Make
 today's commits count.]],
       },
       sections = {
-        {
-          pane = 1,
-          section = "image",
-          path = "~/.config/nvim/assets/virtuous.png",
-          height = 10,
-          width = 27,
-          padding = 2,
-        },
         { pane = 1, section = "header", padding = 2 },
         { pane = 1, icon = " ", title = "Projects", section = "projects", indent = 2, padding = 1 },
         { pane = 1, section = "startup" },
