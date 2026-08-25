@@ -217,8 +217,8 @@ au("ColorScheme", {
 })
 
 vim.g.theme_sync = {
-  dark = { colorscheme = "vague" },
-  light = { colorscheme = "onedark" },
+  dark = { colorscheme = "bamboo" },
+  light = { colorscheme = "bamboo" },
   highlights = {
     vague = {
       dark = {
@@ -321,12 +321,14 @@ local function sync_gnome_theme()
 
   vim.schedule(function()
     local target_cs
+    local background_changed = vim.o.background ~= new_bg
+    if background_changed then vim.o.background = new_bg end
     if mode_config and mode_config.colorscheme and mode_config.colorscheme ~= vim.g.colors_name then
       target_cs = mode_config.colorscheme
       vim.cmd("colorscheme " .. target_cs)
     else
       target_cs = vim.g.colors_name
-      if vim.o.background ~= new_bg then vim.o.background = new_bg end
+      if target_cs == "bamboo" and background_changed then vim.cmd.colorscheme(target_cs) end
     end
     apply_highlights(target_cs)
   end)

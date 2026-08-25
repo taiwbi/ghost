@@ -1,5 +1,14 @@
 return {
   {
+    "ribru17/bamboo.nvim",
+    lazy = false,
+    priority = 1000,
+    config = function()
+      require("bamboo").setup()
+      require("bamboo").load()
+    end,
+  },
+  {
     "rebelot/kanagawa.nvim",
     lazy = true,
     priority = 1000,
@@ -80,6 +89,6 @@ return {
   },
   {
     "vague-theme/vague.nvim",
-    lazy = false,
+    lazy = true,
   },
 }
