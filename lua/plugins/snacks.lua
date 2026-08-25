@@ -49,8 +49,7 @@ return {
           { " ██╔╝           ██║   ██║██╔══██║██║   ██║╚════██║   ██║   \n", hl = "DiagnosticWarn" },
           { "██╔╝███████╗    ╚██████╔╝██║  ██║╚██████╔╝███████║   ██║   \n", hl = "DiagnosticError" },
           { "╚═╝ ╚══════╝     ╚═════╝ ╚═╝  ╚═╝ ╚═════╝ ╚══════╝   ╚═╝   \n\n", hl = "DiagnosticError" },
-          { "One day, you will :q for the last time. Make\n", hl = "Comment" },
-          { "today's commits count.", hl = "Comment" },
+          { "Computers were a mistake. Anyway—", hl = "Comment" },
         },
       },
       sections = {
