@@ -36,7 +36,7 @@ mappings.md             # keymap reference
 
 ```shell
 mv ~/.local/share/nvim ~/.local/share/nvim.bak  # optional clean slate
-git clone <repo> ~/.config/nvim
+git clone https://github.com/taiwbi/ghost ~/.config/nvim
 nvim                                            # lazy.nvim bootstraps on first run
 ```
 
