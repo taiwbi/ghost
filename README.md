@@ -1,6 +1,8 @@
-# nvim
+# Ghost · Neovim
 
-Custom Neovim configuration, self-hosted (no distro).
+Laravel · Rust · Python — crafted with obsession over every UI detail.
+
+![ghost](./ghost.png)
 
 ## Architecture
 
