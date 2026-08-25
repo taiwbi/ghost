@@ -42,15 +42,16 @@ return {
     },
     dashboard = {
       preset = {
-        header = [[██╗              ██████╗ ██╗  ██╗ ██████╗ ███████╗████████╗
-╚██╗            ██╔════╝ ██║  ██║██╔═══██╗██╔════╝╚══██╔══╝
- ╚██╗           ██║  ███╗███████║██║   ██║███████╗   ██║   
- ██╔╝           ██║   ██║██╔══██║██║   ██║╚════██║   ██║   
-██╔╝███████╗    ╚██████╔╝██║  ██║╚██████╔╝███████║   ██║   
-╚═╝ ╚══════╝     ╚═════╝ ╚═╝  ╚═╝ ╚═════╝ ╚══════╝   ╚═╝   
-                                                           
-One day, you will :q for the last time. Make
-today's commits count.]],
+        header = {
+          { "██╗              ██████╗ ██╗  ██╗ ██████╗ ███████╗████████╗\n", hl = "DiagnosticInfo" },
+          { "╚██╗            ██╔════╝ ██║  ██║██╔═══██╗██╔════╝╚══██╔══╝\n", hl = "DiagnosticInfo" },
+          { " ╚██╗           ██║  ███╗███████║██║   ██║███████╗   ██║   \n", hl = "DiagnosticWarn" },
+          { " ██╔╝           ██║   ██║██╔══██║██║   ██║╚════██║   ██║   \n", hl = "DiagnosticWarn" },
+          { "██╔╝███████╗    ╚██████╔╝██║  ██║╚██████╔╝███████║   ██║   \n", hl = "DiagnosticError" },
+          { "╚═╝ ╚══════╝     ╚═════╝ ╚═╝  ╚═╝ ╚═════╝ ╚══════╝   ╚═╝   \n\n", hl = "DiagnosticError" },
+          { "One day, you will :q for the last time. Make\n", hl = "Comment" },
+          { "today's commits count.", hl = "Comment" },
+        },
       },
       sections = {
         { pane = 1, section = "header", padding = 2 },
