@@ -178,7 +178,7 @@ end
 
 function M.codelens()
   vim.g.codelens_enabled = not vim.g.codelens_enabled
-  if vim.g.codelens_enabled then vim.lsp.codelens.refresh { bufnr = 0 } else vim.lsp.codelens.clear() end
+  vim.lsp.codelens.enable(vim.g.codelens_enabled, { bufnr = 0 })
   notify(("codelens %s"):format(bool2str(vim.g.codelens_enabled)))
 end
 

@@ -138,13 +138,7 @@ local function on_attach(client, bufnr)
 
   if client.server_capabilities.codeLensProvider and vim.g.codelens_enabled ~= false then
     vim.g.codelens_enabled = true
-    vim.api.nvim_create_autocmd({ "InsertLeave", "BufEnter" }, {
-      group = vim.api.nvim_create_augroup("lsp_codelens_" .. bufnr, { clear = true }),
-      buffer = bufnr,
-      callback = function()
-        if vim.g.codelens_enabled then vim.lsp.codelens.refresh { bufnr = bufnr } end
-      end,
-    })
+    vim.lsp.codelens.enable(true, { bufnr = bufnr })
   end
 end
 
@@ -200,7 +194,6 @@ return {
         group = vim.api.nvim_create_augroup("user_lsp_detach", { clear = true }),
         callback = function(args)
           pcall(vim.api.nvim_del_augroup_by_name, "lsp_document_highlight_" .. args.buf)
-          pcall(vim.api.nvim_del_augroup_by_name, "lsp_codelens_" .. args.buf)
         end,
       })
 
