@@ -173,6 +173,7 @@ return {
     cmd = { "LspLog" },
     config = function()
       setup_diagnostics()
+      require("util.codelens").setup()
 
       for name, cfg in pairs(server_settings) do
         vim.lsp.config(name, cfg)
