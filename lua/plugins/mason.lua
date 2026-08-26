@@ -44,6 +44,7 @@ return {
         "codelldb",
 
         "tree-sitter-cli",
+        "codex-acp",
       },
     },
   },

@@ -33,11 +33,33 @@ return {
       sources = {
         default = { "lsp", "path", "snippets", "buffer" },
         per_filetype = {
+          AvanteInput = { "avante_commands", "avante_mentions", "avante_shortcuts" },
+          AvantePromptInput = { "avante_prompt_mentions" },
           sql = { "snippets", "cmp-dbee", "buffer" },
           mysql = { "snippets", "buffer" },
           plsql = { "snippets", "buffer" },
         },
         providers = {
+          avante_commands = {
+            name = "avante_commands",
+            module = "blink.compat.source",
+            score_offset = 90,
+          },
+          avante_mentions = {
+            name = "avante_mentions",
+            module = "blink.compat.source",
+            score_offset = 1000,
+          },
+          avante_prompt_mentions = {
+            name = "avante_prompt_mentions",
+            module = "blink.compat.source",
+            score_offset = 1000,
+          },
+          avante_shortcuts = {
+            name = "avante_shortcuts",
+            module = "blink.compat.source",
+            score_offset = 1000,
+          },
           ["cmp-dbee"] = { name = "cmp-dbee", module = "blink.compat.source" },
         },
       },

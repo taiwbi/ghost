@@ -8,11 +8,33 @@ return {
       or "make",
   keys = {
     { "<leader>ae", function() require("avante.api").edit() end, desc = "AI Edit", mode = { "n", "v" } },
-    { "<leader>al", function() require("avante.api").ask() end, desc = "AI Ask", mode = { "n", "v" } }
+    { "<leader>al", function() require("avante.api").ask() end, desc = "AI Ask", mode = { "n", "v" } },
+    {
+      "<leader>ac",
+      function()
+        local api = require "avante.api"
+        if require("avante.config").provider ~= "codex" then api.switch_provider "codex" end
+        local avante = require "avante"
+        if avante.is_sidebar_open() then avante.close_sidebar() end
+        api.ask { new_chat = true }
+      end,
+      desc = "Codex Chat",
+      mode = "n",
+    },
+    { "<leader>am", function() require("avante.api").select_acp_model() end, desc = "Codex Model" },
+    {
+      "<leader>ar",
+      function() require("avante.acp_config_selector").open("thought_level", "Codex Reasoning Effort> ") end,
+      desc = "Codex Reasoning Effort",
+    },
+    { "<leader>aM", function() require("avante.api").select_acp_mode() end, desc = "Codex Mode" },
+    { "<leader>ah", function() require("avante.api").select_history() end, desc = "AI Chat History" },
+    { "<leader>as", function() require("avante.api").stop() end, desc = "AI Stop" },
   },
   dependencies = {
     "nvim-lua/plenary.nvim",
     "MunifTanjim/nui.nvim",
+    "saghen/blink.compat",
     {
       "MeanderingProgrammer/render-markdown.nvim",
       opts = {
@@ -22,8 +44,23 @@ return {
     },
   },
   opts = {
-    provider = "openrouter",
+    -- Codex runs through ACP, preserving its agentic tools and ChatGPT login.
+    provider = "codex",
     auto_suggestions_provider = "openrouter",
+    selector = {
+      provider = "snacks",
+    },
+    acp_providers = {
+      codex = {
+        command = "codex-acp",
+        env = {
+          HOME = vim.env.HOME,
+          PATH = vim.env.PATH,
+          CODEX_PATH = vim.fn.exepath "codex",
+          NODE_NO_WARNINGS = "1",
+        },
+      },
+    },
     providers = {
       openrouter = {
         __inherited_from = "openai",
@@ -38,6 +75,7 @@ return {
       },
     },
     behaviour = {
+      auto_add_current_file = false,
       auto_suggestions = false,
       auto_set_keymaps = false,
     },
