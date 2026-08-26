@@ -14,9 +14,11 @@ edging = "antialias"
 
 [[font.normal]]
 family = "Dank Mono"
+style = "Bold"
 
 [[font.bold]]
 family = "Dank Mono"
+style = "ExtraBold"
 
 # fallback font
 [[font.normal]]
