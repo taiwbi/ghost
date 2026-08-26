@@ -13,10 +13,10 @@ hinting = "full"
 edging = "antialias"
 
 [[font.normal]]
-family = "JetBrains Mono"
+family = "Dank Mono"
 
 [[font.bold]]
-family = "JetBrains Mono"
+family = "Dank Mono"
 
 # fallback font
 [[font.normal]]
