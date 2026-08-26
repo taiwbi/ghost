@@ -259,9 +259,9 @@ Leader key is `<Space>`, local leader is `,`. [`which-key.nvim`](https://github.
 
 ## Database
 
-| Action            | Mapping        |
-| ----------------- | -------------- |
-| Toggle DBUI       | `Leader + Db`  |
+| Action      | Mapping       |
+| ----------- | ------------- |
+| Toggle DBee | `Leader + Db` |
 
 ## Clipboard
 

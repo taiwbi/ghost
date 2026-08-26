@@ -33,12 +33,12 @@ return {
       sources = {
         default = { "lsp", "path", "snippets", "buffer" },
         per_filetype = {
-          sql = { "snippets", "dadbod", "buffer" },
-          mysql = { "snippets", "dadbod", "buffer" },
-          plsql = { "snippets", "dadbod", "buffer" },
+          sql = { "snippets", "cmp-dbee", "buffer" },
+          mysql = { "snippets", "buffer" },
+          plsql = { "snippets", "buffer" },
         },
         providers = {
-          dadbod = { name = "Dadbod", module = "vim_dadbod_completion.blink" },
+          ["cmp-dbee"] = { name = "cmp-dbee", module = "blink.compat.source" },
         },
       },
       keymap = {

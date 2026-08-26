@@ -385,7 +385,7 @@ map("n", "<Leader>rr", function() vim.fn.setreg("+", vim.fn.expand "%:.") end, {
 
 -- Database --------------------------------------------------------------------
 
-map("n", "<Leader>Db", "<Cmd>DBUIToggle<CR>", { desc = "Toggle database UI" })
+map("n", "<Leader>Db", "<Cmd>Dbee toggle<CR>", { desc = "Toggle DBee" })
 
 -- Clipboard / Paste -----------------------------------------------------------
 
