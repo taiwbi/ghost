@@ -145,6 +145,12 @@ end, { desc = "Home screen" })
 
 local function resession() return require "resession" end
 map("n", "<Leader>Ss", function()
+  local session = resession().get_current_session_info()
+  if session and session.dir ~= "dirsession" and session.name ~= "Last Session" then
+    resession().save(session.name, { dir = session.dir })
+    return
+  end
+
   vim.ui.input({ prompt = "Save session as: " }, function(name)
     if name and name ~= "" then resession().save(name) end
   end)
