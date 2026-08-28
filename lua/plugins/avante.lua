@@ -35,13 +35,7 @@ return {
     "nvim-lua/plenary.nvim",
     "MunifTanjim/nui.nvim",
     "saghen/blink.compat",
-    {
-      "MeanderingProgrammer/render-markdown.nvim",
-      opts = {
-        file_types = { "markdown", "Avante" },
-      },
-      ft = { "markdown", "Avante" },
-    },
+    "MeanderingProgrammer/render-markdown.nvim",
   },
   opts = {
     -- Codex runs through ACP, preserving its agentic tools and ChatGPT login.
