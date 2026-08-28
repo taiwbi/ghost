@@ -191,7 +191,7 @@ map("n", "<Leader>pU", "<Cmd>Lazy update<CR>", { desc = "Plugins update" })
 -- LSP -------------------------------------------------------------------------
 
 map("n", "<Leader>li", "<Cmd>LspInfo<CR>", { desc = "LSP info" })
-map("n", "K", vim.lsp.buf.hover, { desc = "LSP hover" })
+map("n", "K", function() vim.lsp.buf.hover() end, { desc = "LSP hover" })
 map("n", "<Leader>lI", "<Cmd>NullLsInfo<CR>", { desc = "None-ls info" })
 map("n", "<Leader>lf", function() vim.lsp.buf.format { async = true } end, { desc = "Format document" })
 map("n", "<Leader>lS", "<Cmd>AerialToggle<CR>", { desc = "Symbols outline" })

@@ -16,6 +16,12 @@ return {
         -- Multiple attached clients may legitimately have no hover result.
         -- Keep the useful response without showing one notification per client.
         silent = true,
+        opts = {
+          size = {
+            max_width = 80,
+            max_height = 9,
+          },
+        },
       },
       message = {
         enabled = true,
@@ -30,6 +36,16 @@ return {
   },
   config = function(_, opts)
     require("noice").setup(opts)
+
+    -- Noice separates fenced code blocks from surrounding Markdown.
+    -- Disable that.
+    local markdown = require "noice.text.markdown"
+    local markdown_format = markdown.format
+    markdown.format = function(message, ...)
+      local result = markdown_format(message, ...)
+      if message.event == "lsp" and message.kind == "hover" then message:trim_empty_lines() end
+      return result
+    end
 
     -- WORKAROUND: Neovim 0.11+ emits confirmations as separate message and
     -- cmdline events. Noice can incorrectly deduplicate a repeated confirmation
