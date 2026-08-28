@@ -1,7 +1,7 @@
 return {
   {
     "ribru17/bamboo.nvim",
-    lazy = false,
+    lazy = true,
     priority = 1000,
     config = function()
       require("bamboo").setup()
@@ -25,7 +25,38 @@ return {
     lazy = true,
     config = function() vim.g.bearded_variant = "monokai_stone" end,
   },
-  { "catppuccin/nvim", name = "catppuccin", lazy = true, priority = 1000 },
+  {
+    "catppuccin/nvim",
+    name = "catppuccin",
+    lazy = false,
+    priority = 1000,
+    config = function()
+      require("catppuccin").setup {
+        color_overrides = {
+          mocha = {
+            base = "#212121",
+            mantle = "#212121",
+            crust = "#212121",
+          },
+          macchiato = {
+            base = "#212121",
+            mantle = "#212121",
+            crust = "#212121",
+          },
+          frappe = {
+            base = "#212121",
+            mantle = "#212121",
+            crust = "#212121",
+          },
+          latte = {
+            base = "#f2f4f8",
+            mantle = "#e6e9ef",
+            crust = "#dce0e8",
+          },
+        },
+      }
+    end,
+  },
   { "rose-pine/neovim", name = "rose-pine", lazy = true },
   {
     "scottmckendry/cyberdream.nvim",
