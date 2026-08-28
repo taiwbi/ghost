@@ -3,9 +3,7 @@ local MODE_FG = "#1a1b26"
 
 local icons = require "util.icons"
 
-local function current_mode()
-  return icons.modes[vim.fn.mode()] or { name = vim.fn.mode():upper(), color = "#7AA2F7" }
-end
+local function current_mode() return icons.modes[vim.fn.mode()] or { name = vim.fn.mode():upper(), color = "#7AA2F7" } end
 
 local function has_filename() return vim.fn.expand "%:t" ~= "" end
 
@@ -94,25 +92,23 @@ local function get_hl(group, attr)
   return hl
 end
 
+local function statusline_bg() return get_hl("StatusLine", "bg") or "NONE" end
+
 local mode_block = {
   init = function(self) self.mode = current_mode() end,
   {
-    provider = "",
-    hl = function(self) return { fg = self.mode.color, bg = "NONE" } end,
-  },
-  {
-    provider = function(self) return " " .. icons.ui.VimIcon .. " " .. self.mode.name .. " " end,
+    provider = function(self) return icons.ui.VimIcon .. " " .. self.mode.name .. " " end,
     hl = function(self) return { fg = MODE_FG, bg = self.mode.color, bold = true } end,
   },
 }
 
 local mode_to_file_sep = {
   init = function(self) self.mode = current_mode() end,
-  provider = "",
+  provider = "",
   hl = function(self)
     return {
       fg = self.mode.color,
-      bg = has_filename() and FILE_BG or "NONE",
+      bg = has_filename() and FILE_BG or statusline_bg(),
     }
   end,
 }
@@ -127,8 +123,8 @@ local file_info = {
     hl = { fg = MODE_FG, bg = FILE_BG, bold = true },
   },
   {
-    provider = "",
-    hl = function() return { fg = FILE_BG, bg = "NONE" } end,
+    provider = "",
+    hl = function() return { fg = FILE_BG, bg = statusline_bg() } end,
   },
 }
 
@@ -136,11 +132,14 @@ local git_branch = {
   condition = function()
     return has_filename() and vim.b.gitsigns_status_dict and vim.b.gitsigns_status_dict.head ~= nil
   end,
-  provider = function()
-    return "   " .. vim.b.gitsigns_status_dict.head .. " "
-  end,
+  provider = function() return "  " .. vim.b.gitsigns_status_dict.head end,
   hl = { fg = "#7AA2F7" },
 }
+
+local function safe_searchcount()
+  local ok, result = pcall(vim.fn.searchcount, { maxcount = 999, timeout = 250 })
+  return ok and result or nil
+end
 
 local cmd_info = {
   {
@@ -150,11 +149,13 @@ local cmd_info = {
   },
   {
     condition = function()
-      local search = vim.fn.searchcount { maxcount = 999, timeout = 250 }
-      return vim.v.hlsearch == 1 and (search.total or 0) > 0
+      if vim.v.hlsearch ~= 1 then return false end
+      local search = safe_searchcount()
+      return search ~= nil and (search.total or 0) > 0
     end,
     provider = function()
-      local s = vim.fn.searchcount { maxcount = 999, timeout = 250 }
+      local s = safe_searchcount()
+      if not s then return "" end
       if (s.total or 0) > 0 then return string.format(" %d/%d ", s.current or 0, s.total) end
       return ""
     end,
@@ -244,21 +245,14 @@ local git_diff = {
   {
     provider = function(self)
       local n = self.status.added or 0
-      return n > 0 and ("  " .. n) or ""
+      return n > 0 and ("  +" .. n) or ""
     end,
     hl = { fg = "#9ECE6A" },
   },
   {
     provider = function(self)
-      local n = self.status.changed or 0
-      return n > 0 and ("  " .. n) or ""
-    end,
-    hl = { fg = "#E0AF68" },
-  },
-  {
-    provider = function(self)
       local n = self.status.removed or 0
-      return n > 0 and ("  " .. n) or ""
+      return n > 0 and ("  -" .. n) or ""
     end,
     hl = { fg = "#F7768E" },
   },
@@ -266,34 +260,49 @@ local git_diff = {
 
 local function diag_count(severity) return #vim.diagnostic.get(0, { severity = severity }) end
 
-local diagnostics = {
-  condition = function() return #vim.diagnostic.get(0) > 0 end,
+local errors = {
+  condition = function() return diag_count(vim.diagnostic.severity.ERROR) > 0 end,
   update = { "DiagnosticChanged", "BufEnter" },
   {
     provider = function()
       local n = diag_count(vim.diagnostic.severity.ERROR)
-      return n > 0 and ("  " .. icons.diagnostics.Error .. n) or ""
+      return n > 0 and ("   " .. n) or ""
     end,
     hl = { fg = "#F7768E" },
   },
+}
+
+local warnings = {
+  condition = function() return diag_count(vim.diagnostic.severity.WARN) > 0 end,
+  update = { "DiagnosticChanged", "BufEnter" },
   {
     provider = function()
       local n = diag_count(vim.diagnostic.severity.WARN)
-      return n > 0 and ("  " .. icons.diagnostics.Warn .. n) or ""
+      return n > 0 and ("   " .. n) or ""
     end,
     hl = { fg = "#E0AF68" },
   },
+}
+
+local info = {
+  condition = function() return diag_count(vim.diagnostic.severity.INFO) > 0 end,
+  update = { "DiagnosticChanged", "BufEnter" },
   {
     provider = function()
       local n = diag_count(vim.diagnostic.severity.INFO)
-      return n > 0 and ("  " .. icons.diagnostics.Info .. n) or ""
+      return n > 0 and ("   " .. n) or ""
     end,
     hl = { fg = "#7DCFFF" },
   },
+}
+
+local hints = {
+  condition = function() return diag_count(vim.diagnostic.severity.HINT) > 0 end,
+  update = { "DiagnosticChanged", "BufEnter" },
   {
     provider = function()
       local n = diag_count(vim.diagnostic.severity.HINT)
-      return n > 0 and ("  " .. icons.diagnostics.Hint .. n) or ""
+      return n > 0 and ("  󰌵 " .. n) or ""
     end,
     hl = { fg = "#9ECE6A" },
   },
@@ -305,11 +314,12 @@ local nav = {
     local total = vim.fn.line "$"
     local col = vim.fn.virtcol "."
     local pct = math.floor((cur / total) * 100 + 0.5)
-    return string.format("  %d:%d  %d%% ", cur, col, pct)
+    return string.format("  %d:%d  %d%%%%", cur, col, pct)
   end,
 }
 
 local fill = { provider = "%=" }
+local right_padding = { provider = "  " }
 
 return {
   "rebelot/heirline.nvim",
@@ -323,12 +333,15 @@ return {
         mode_to_file_sep,
         file_info,
         git_branch,
-        cmd_info,
-        fill,
-        fill,
         git_diff,
-        diagnostics,
+        fill,
+        cmd_info,
+        errors,
+        warnings,
+        info,
+        hints,
         nav,
+        right_padding,
       },
       winbar = {
         hl = function()

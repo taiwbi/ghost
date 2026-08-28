@@ -49,8 +49,8 @@ return {
             crust = "#212121",
           },
           latte = {
-            base = "#f2f4f8",
-            mantle = "#e6e9ef",
+            base = "#dce0e8",
+            mantle = "#dce0e8",
             crust = "#dce0e8",
           },
         },
