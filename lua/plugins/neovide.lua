@@ -27,4 +27,13 @@ vim.g.neovide_cursor_vfx_mode = "pixiedust"
 vim.g.neovide_cursor_vfx_particle_lifetime = 2
 vim.g.neovide_cursor_vfx_particle_density = 3
 
+vim.g.neovide_scale_factor = 1.0
+local function change_scale(delta) vim.g.neovide_scale_factor = math.max(0.5, vim.g.neovide_scale_factor + delta) end
+
+vim.keymap.set("n", "<C-+>", function() change_scale(0.1) end, { desc = "Increase font size" })
+
+vim.keymap.set("n", "<C-_>", function() change_scale(-0.1) end, { desc = "Decrease font size" })
+
+vim.keymap.set("n", "<C-)>", function() vim.g.neovide_scale_factor = 1.0 end, { desc = "Reset font size" })
+
 return {}
