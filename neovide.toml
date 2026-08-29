@@ -8,21 +8,18 @@ frame = "none"
 
 # --- Fonts ---
 [font]
-size = 14
+size = 13
 hinting = "full"
 edging = "antialias"
 
 [[font.normal]]
-family = "Dank Mono"
-style = "Bold"
+family = "JetBrains Mono"
 
 [[font.bold]]
-family = "Dank Mono"
-style = "ExtraBold"
+family = "JetBrains Mono"
 
 # fallback font
 [[font.normal]]
 family = "BetterIcons"
-
 [[font.normal]]
 family = "Vazir Code Hack"
