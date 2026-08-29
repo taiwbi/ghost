@@ -50,6 +50,14 @@ local server_settings = {
       ["0"] = vim.fn.readfile(vim.fn.expand("~/.keys/DEVSENSE"))[1] or "",
     },
   },
+  laravel_lsp = {
+    cmd = { "laravel-lsp" },
+    filetypes = { "php", "blade" },
+    root_dir = function(bufnr, on_dir)
+      local root = vim.fs.root(bufnr, "artisan")
+      if root then on_dir(root) end
+    end,
+  },
   jsonls = {
     handlers = {
       ["textDocument/publishDiagnostics"] = function(err, result, ctx, config)
@@ -82,6 +90,7 @@ local default_servers = {
   "basedpyright",
   "rust_analyzer",
   "phptools",
+  "laravel_lsp",
 }
 
 local function setup_diagnostics()

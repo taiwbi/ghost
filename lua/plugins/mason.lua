@@ -22,7 +22,6 @@ return {
       ensure_installed = {
         "lua-language-server",
         "html-lsp",
-        "laravel-ls",
         "css-lsp",
         "tailwindcss-language-server",
         "typescript-language-server",
