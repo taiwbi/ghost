@@ -3,6 +3,9 @@ return {
   event = "VeryLazy",
   opts = {
     preset = "modern",
+    win = {
+      border = "none",
+    },
     spec = {
       { "<Leader>a", group = "AI", mode = { "n", "v" } },
       { "<Leader>b", group = "Buffers" },

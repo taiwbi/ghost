@@ -12,7 +12,79 @@ return {
     input = { enabled = true },
     notifier = { enabled = true },
     image = { doc = { enabled = true } },
-    picker = { ui_select = true },
+    styles = {
+      float = {
+        backdrop = 100,
+      },
+    },
+    picker = {
+      ui_select = true,
+      win = {
+        preview = {
+          wo = { winbar = "" },
+        },
+      },
+      layouts = {
+        default = {
+          layout = {
+            box = "horizontal",
+            width = 0.8,
+            min_width = 120,
+            height = 0.8,
+            border = "none",
+            {
+              box = "vertical",
+              border = "none",
+              {
+                win = "input",
+                height = 1,
+                border = {
+                  "", -- top-left
+                  "", -- top
+                  "", -- top-right
+                  "│", -- right
+                  " ", -- bottom-right
+                  "─", -- bottom
+                  "", -- bottom-left
+                  "", -- left
+                },
+                title = "{title} {live} {flags}",
+                title_pos = "center",
+              },
+              {
+                win = "list",
+                border = "right",
+              },
+            },
+            {
+              win = "preview",
+              width = 0.5,
+              border = "none",
+            },
+          },
+        },
+        select = {
+          layout = {
+            box = "vertical",
+            width = 0.5,
+            height = 0.4,
+            border = "none",
+            backdrop = false,
+
+            {
+              win = "input",
+              height = 1,
+              border = "bottom",
+            },
+
+            {
+              win = "list",
+              border = "none",
+            },
+          },
+        },
+      },
+    },
     explorer = { enabled = true },
     indent = {
       indent = { char = "▏" },
@@ -43,12 +115,30 @@ return {
     dashboard = {
       preset = {
         header = {
-          { "██╗              ██████╗ ██╗  ██╗ ██████╗ ███████╗████████╗\n", hl = "DiagnosticInfo" },
-          { "╚██╗            ██╔════╝ ██║  ██║██╔═══██╗██╔════╝╚══██╔══╝\n", hl = "DiagnosticInfo" },
-          { " ╚██╗           ██║  ███╗███████║██║   ██║███████╗   ██║   \n", hl = "DiagnosticWarn" },
-          { " ██╔╝           ██║   ██║██╔══██║██║   ██║╚════██║   ██║   \n", hl = "DiagnosticWarn" },
-          { "██╔╝███████╗    ╚██████╔╝██║  ██║╚██████╔╝███████║   ██║   \n", hl = "DiagnosticError" },
-          { "╚═╝ ╚══════╝     ╚═════╝ ╚═╝  ╚═╝ ╚═════╝ ╚══════╝   ╚═╝   \n\n", hl = "DiagnosticError" },
+          {
+            "██╗              ██████╗ ██╗  ██╗ ██████╗ ███████╗████████╗\n",
+            hl = "DiagnosticInfo",
+          },
+          {
+            "╚██╗            ██╔════╝ ██║  ██║██╔═══██╗██╔════╝╚══██╔══╝\n",
+            hl = "DiagnosticInfo",
+          },
+          {
+            " ╚██╗           ██║  ███╗███████║██║   ██║███████╗   ██║   \n",
+            hl = "DiagnosticWarn",
+          },
+          {
+            " ██╔╝           ██║   ██║██╔══██║██║   ██║╚════██║   ██║   \n",
+            hl = "DiagnosticWarn",
+          },
+          {
+            "██╔╝███████╗    ╚██████╔╝██║  ██║╚██████╔╝███████║   ██║   \n",
+            hl = "DiagnosticError",
+          },
+          {
+            "╚═╝ ╚══════╝     ╚═════╝ ╚═╝  ╚═╝ ╚═════╝ ╚══════╝   ╚═╝   \n\n",
+            hl = "DiagnosticError",
+          },
           { "Computers were a mistake. Anyway—", hl = "Comment" },
         },
       },
