@@ -60,7 +60,7 @@ return {
         __inherited_from = "openai",
         endpoint = "https://openrouter.ai/api/v1",
         api_key_name = "OPENROUTER_API_KEY",
-        model = "openai/gpt-5.6-luna",
+        model = "z-ai/glm-5.3",
         extra_request_body = {
           provider = {
             sort = "price",
