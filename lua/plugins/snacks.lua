@@ -85,7 +85,7 @@ return {
         },
       },
     },
-    explorer = { enabled = true },
+    explorer = { enabled = false },
     indent = {
       indent = { char = "▏" },
       scope = { char = "▏" },

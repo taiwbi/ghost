@@ -68,12 +68,11 @@ Leader key is `<Space>`, local leader is `,`. [`which-key.nvim`](https://github.
 | Cancel completion            | `Ctrl + e`                           |
 | Scroll docs up / down        | `Ctrl + u` / `Ctrl + d`              |
 
-## File Explorer (snacks.explorer)
+## File Explorer (oil.nvim)
 
-| Action          | Mapping       |
-| --------------- | ------------- |
-| Toggle explorer | `Leader + e`  |
-| Focus explorer  | `Leader + o`  |
+| Action                            | Mapping      |
+| --------------------------------- | ------------ |
+| Open Oil in the current directory | `Leader + e` |
 
 ## Dashboard
 

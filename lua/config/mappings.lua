@@ -126,10 +126,9 @@ map("n", "[l", "<Cmd>lprev<CR>", { desc = "Previous location entry" })
 map("n", "]L", "<Cmd>llast<CR>", { desc = "Last location entry" })
 map("n", "[L", "<Cmd>lfirst<CR>", { desc = "First location entry" })
 
--- Explorer (snacks) -----------------------------------------------------------
+-- File explorer (oil.nvim) ----------------------------------------------------
 
-map("n", "<Leader>e", function() snacks().explorer() end, { desc = "Toggle explorer" })
-map("n", "<Leader>o", function() snacks().explorer { focus = "input" } end, { desc = "Focus explorer" })
+map("n", "<Leader>e", "<Cmd>Oil .<CR>", { desc = "Open Oil in current directory" })
 
 -- Dashboard -------------------------------------------------------------------
 
