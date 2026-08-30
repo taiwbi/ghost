@@ -327,6 +327,10 @@ return {
   dependencies = { "SmiteshP/nvim-navic" },
   opts = function()
     return {
+      opts = {
+        -- Oil renders confirmation actions on the last row of its preview float.
+        disable_winbar_cb = function(args) return vim.bo[args.buf].filetype == "oil_preview" end,
+      },
       statusline = {
         hl = function() return { fg = get_hl("Normal", "fg") or "fg", bg = get_hl("StatusLine", "bg") or "bg" } end,
         mode_block,
