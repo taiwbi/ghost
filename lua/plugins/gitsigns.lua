@@ -94,7 +94,8 @@ return {
       map("n", "<Leader>gR", gs.reset_buffer, "Reset Git buffer")
       map("n", "<Leader>gs", gs.stage_hunk, "Stage/Unstage Git hunk")
       map("v", "<Leader>gs", function() gs.stage_hunk { vim.fn.line ".", vim.fn.line "v" } end, "Stage Git hunk")
-      map("n", "<Leader>gd", gs.diffthis, "View Git diff")
+      map("n", "<Leader>gd", function() require("mini.diff").toggle_overlay(bufnr) end, "Toggle inline Git diff")
+      map("n", "<Leader>gD", gs.diffthis, "View Git diff side by side")
 
       map("n", "[G", function() gs.nav_hunk "first" end, "First Git hunk")
       map("n", "]G", function() gs.nav_hunk "last" end, "Last Git hunk")

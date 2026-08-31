@@ -190,7 +190,7 @@ Leader key is `<Space>`, local leader is `,`. [`which-key.nvim`](https://github.
 | Git status                        | `Leader + gt`        |
 | Git stash                         | `Leader + gT`        |
 
-## Git (gitsigns)
+## Git
 
 | Action                    | Mapping                |
 | ------------------------- | ---------------------- |
@@ -202,7 +202,8 @@ Leader key is `<Space>`, local leader is `,`. [`which-key.nvim`](https://github.
 | Stage hunk                | `Leader + gs` (n / v)  |
 | Stage buffer (including untracked files) | `Leader + gS`          |
 | Unstage buffer             | `Leader + gU`          |
-| View diff                 | `Leader + gd`          |
+| Toggle inline diff (unstaged) | `Leader + gd`     |
+| View diff side by side    | `Leader + gD`          |
 | Next / previous Git hunk  | `]g` / `[g`            |
 | First / last Git hunk     | `[G` / `]G`            |
 | Hunk text object          | `ig` (in `o`, `x`)     |

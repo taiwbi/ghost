@@ -15,7 +15,7 @@ Laravel · Rust · Python — crafted with obsession over every UI detail.
 - **Statusline:** [heirline.nvim](https://github.com/rebelot/heirline.nvim)
 - **Syntax:** [nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter)
 - **Formatting/linting:** [none-ls.nvim](https://github.com/nvimtools/none-ls.nvim)
-- **Git:** [gitsigns.nvim](https://github.com/lewis6991/gitsigns.nvim)
+- **Git:** [gitsigns.nvim](https://github.com/lewis6991/gitsigns.nvim) + [mini.diff](https://github.com/nvim-mini/mini.diff) inline overlays
 - **Sessions:** [resession.nvim](https://github.com/stevearc/resession.nvim)
 - **Debug:** [nvim-dap](https://github.com/mfussenegger/nvim-dap) + dap-ui
 
