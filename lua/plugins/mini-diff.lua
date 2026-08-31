@@ -15,6 +15,13 @@ return {
         delete = "_",
       },
     },
+    -- Match Neovim's best built-in diff strategy while allowing larger hunks
+    options = {
+      algorithm = "histogram",
+      indent_heuristic = true,
+      linematch = 200,
+      wrap_goto = false,
+    },
     mappings = {
       apply = "",
       reset = "",
@@ -35,6 +42,7 @@ return {
       for _, group in ipairs { "MiniDiffOverDelete", "MiniDiffOverChange", "MiniDiffOverContext" } do
         vim.api.nvim_set_hl(0, group, { link = "DiffDelete" })
       end
+      vim.api.nvim_set_hl(0, "MiniDiffOverChangeBuf", { link = "DiffChange" })
     end
 
     apply_overlay_highlights()
