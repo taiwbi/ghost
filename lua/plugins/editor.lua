@@ -29,6 +29,12 @@ return {
     },
   },
   {
+    "kylechui/nvim-surround",
+    version = "*",
+    event = "VeryLazy",
+    opts = {},
+  },
+  {
     "numToStr/Comment.nvim",
     keys = {
       { "gc", mode = { "n", "v" } },
