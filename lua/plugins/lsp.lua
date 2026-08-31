@@ -99,7 +99,16 @@ local function setup_diagnostics()
     virtual_lines = false,
     underline = true,
     severity_sort = true,
-    float = { border = "rounded", source = true },
+    float = {
+      border = "none",
+      source = true,
+      header = "",
+      prefix = "  ",
+      format = function(diagnostic) return diagnostic.message:gsub("\n", "  \n") end,
+      suffix = function(diagnostic)
+        return (diagnostic.code and (" [%s]"):format(diagnostic.code) or "") .. "  "
+      end,
+    },
     signs = false,
   }
 end
