@@ -34,14 +34,14 @@ return {
       require("catppuccin").setup {
         color_overrides = {
           mocha = {
-            base = "#191919",
-            mantle = "#171717",
-            crust = "#121212",
+            base = "#171717",
+            mantle = "#151515",
+            crust = "#090909",
           },
           macchiato = {
-            base = "#202020",
-            mantle = "#181818",
-            crust = "#131313",
+            base = "#191919",
+            mantle = "#171717",
+            crust = "#111111",
           },
           frappe = {
             base = "#212121",
