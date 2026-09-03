@@ -136,15 +136,26 @@ return {
             hl = "DiagnosticError",
           },
           {
-            "╚═╝ ╚══════╝     ╚═════╝ ╚═╝  ╚═╝ ╚═════╝ ╚══════╝   ╚═╝   \n\n",
+            "╚═╝ ╚══════╝     ╚═════╝ ╚═╝  ╚═╝ ╚═════╝ ╚══════╝   ╚═╝   \n",
             hl = "DiagnosticError",
           },
           { "Computers were a mistake. Anyway—", hl = "Comment" },
         },
       },
       sections = {
-        { pane = 1, section = "header", padding = 2 },
-        { pane = 1, icon = " ", title = "Projects", section = "projects", indent = 2, padding = 1 },
+        { pane = 1, section = "header", padding = 0 },
+        {
+          pane = 1,
+          align = "center",
+          text = {
+            { "✦  welcome back", hl = "Title" },
+            {
+              "\n   2B — graceful as moonlight,\n   brave as dawn, and impossible not to adore.",
+              hl = "Comment",
+            },
+          },
+          padding = { 1, 0 },
+        },
         { pane = 1, section = "startup" },
       },
     },
