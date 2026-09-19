@@ -15,13 +15,30 @@ return {
         command = "node",
         args = { os.getenv "HOME" .. "/.local/share/nvim/mason/packages/php-debug-adapter/extension/out/phpDebug.js" },
       }
+
+      local listen_for_xdebug = setmetatable({
+        type = "php",
+        request = "launch",
+        name = "Listen for Xdebug",
+        port = 9003,
+      }, {
+        __call = function(config)
+          local project_root = vim.fs.root(0, { "composer.json", ".git" }) or vim.fn.getcwd()
+
+          if vim.fn.filereadable(project_root .. "/vendor/bin/sail") == 1 then
+            return vim.tbl_extend("force", config, {
+              pathMappings = {
+                ["/var/www/html"] = project_root,
+              },
+            })
+          end
+
+          return config
+        end,
+      })
+
       dap.configurations.php = {
-        {
-          type = "php",
-          request = "launch",
-          name = "Listen for Xdebug",
-          port = "9003",
-        },
+        listen_for_xdebug,
         {
           name = "Launch currently open script",
           type = "php",
