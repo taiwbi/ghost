@@ -70,19 +70,6 @@ return {
     },
   },
   { "dgox16/oldworld.nvim", lazy = true, priority = 1000 },
-  {
-    "aktersnurra/no-clown-fiesta.nvim",
-    lazy = true,
-    priority = 1000,
-    opts = {
-      theme = "dark",
-      styles = {
-        type = { bold = true },
-        lsp = { underline = false },
-        match_paren = { underline = true },
-      },
-    },
-  },
   { "shaunsingh/nord.nvim", lazy = true },
   {
     "ellisonleao/gruvbox.nvim",
