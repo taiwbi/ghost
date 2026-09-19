@@ -68,6 +68,20 @@ Leader key is `<Space>`, local leader is `,`. [`which-key.nvim`](https://github.
 | Cancel completion            | `Ctrl + e`                           |
 | Scroll docs up / down        | `Ctrl + u` / `Ctrl + d`              |
 
+## AI Completion (Minuet)
+
+Minuet uses virtual text for inline suggestions. It reads the OpenRouter key from
+`OPENROUTER_API_KEY`; set that environment variable before starting Neovim.
+
+| Action | Mapping |
+| ------ | ------- |
+| Accept all inline AI text | `Alt + l` |
+| Accept the next AI line | `Alt + k` |
+| Next / previous AI suggestion | `Alt + n` / `Alt + p` |
+| Dismiss AI suggestion | `Alt + x` |
+| Predict / apply / dismiss next edit (Duet) | `Leader + m p` / `Leader + m a` / `Leader + m d` |
+| Enable/disable automatic next-edit prediction (Duet, off by default) | `Leader + m t` |
+
 ## File Explorer (oil.nvim)
 
 | Action                            | Mapping      |
