@@ -13,10 +13,10 @@ hinting = "full"
 edging = "antialias"
 
 [[font.normal]]
-family = "Geist Mono"
+family = "Elephant"
 
 [[font.bold]]
-family = "Geist Mono"
+family = "Elephant"
 
 # fallback font
 [[font.normal]]
