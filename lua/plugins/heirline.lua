@@ -92,25 +92,12 @@ local function get_hl(group, attr)
   return hl
 end
 
-local function statusline_bg() return get_hl("StatusLine", "bg") or "NONE" end
-
 local mode_block = {
   init = function(self) self.mode = current_mode() end,
   {
-    provider = function(self) return icons.ui.VimIcon .. " " .. self.mode.name .. " " end,
+    provider = function(self) return " " .. self.mode.name .. " " end,
     hl = function(self) return { fg = MODE_FG, bg = self.mode.color, bold = true } end,
   },
-}
-
-local mode_to_file_sep = {
-  init = function(self) self.mode = current_mode() end,
-  provider = "",
-  hl = function(self)
-    return {
-      fg = self.mode.color,
-      bg = has_filename() and FILE_BG or statusline_bg(),
-    }
-  end,
 }
 
 local file_info = {
@@ -118,13 +105,11 @@ local file_info = {
   {
     provider = function()
       local name = vim.fn.expand "%:t"
-      return " " .. name .. (vim.bo.modified and " " or "") .. (vim.bo.modifiable == false and "  " or "") .. " "
+      local state = vim.bo.modified and " [modified]" or ""
+      local readonly = vim.bo.modifiable == false and " [readonly]" or ""
+      return " " .. name .. state .. readonly .. " "
     end,
-    hl = { fg = MODE_FG, bg = FILE_BG, bold = true },
-  },
-  {
-    provider = "",
-    hl = function() return { fg = FILE_BG, bg = statusline_bg() } end,
+    hl = { fg = FILE_BG, bold = true },
   },
 }
 
@@ -132,7 +117,7 @@ local git_branch = {
   condition = function()
     return has_filename() and vim.b.gitsigns_status_dict and vim.b.gitsigns_status_dict.head ~= nil
   end,
-  provider = function() return "  " .. vim.b.gitsigns_status_dict.head end,
+  provider = function() return " branch: " .. vim.b.gitsigns_status_dict.head end,
   hl = { fg = "#7AA2F7" },
 }
 
@@ -266,7 +251,7 @@ local errors = {
   {
     provider = function()
       local n = diag_count(vim.diagnostic.severity.ERROR)
-      return n > 0 and ("   " .. n) or ""
+      return n > 0 and ("  errors: " .. n) or ""
     end,
     hl = { fg = "#F7768E" },
   },
@@ -278,7 +263,7 @@ local warnings = {
   {
     provider = function()
       local n = diag_count(vim.diagnostic.severity.WARN)
-      return n > 0 and ("   " .. n) or ""
+      return n > 0 and ("  warnings: " .. n) or ""
     end,
     hl = { fg = "#E0AF68" },
   },
@@ -290,7 +275,7 @@ local info = {
   {
     provider = function()
       local n = diag_count(vim.diagnostic.severity.INFO)
-      return n > 0 and ("   " .. n) or ""
+      return n > 0 and ("  info: " .. n) or ""
     end,
     hl = { fg = "#7DCFFF" },
   },
@@ -302,7 +287,7 @@ local hints = {
   {
     provider = function()
       local n = diag_count(vim.diagnostic.severity.HINT)
-      return n > 0 and ("  󰌵 " .. n) or ""
+      return n > 0 and ("  hints: " .. n) or ""
     end,
     hl = { fg = "#9ECE6A" },
   },
@@ -339,7 +324,6 @@ return {
       statusline = {
         hl = function() return { fg = get_hl("Normal", "fg") or "fg", bg = get_hl("StatusLine", "bg") or "bg" } end,
         mode_block,
-        mode_to_file_sep,
         file_info,
         git_branch,
         git_diff,
