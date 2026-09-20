@@ -342,8 +342,8 @@ end
 
 map("n", "<Leader>tg", function()
   local cwd = vim.fn.getcwd()
-  os.execute("kitty --working-directory=" .. vim.fn.shellescape(cwd) .. " > /dev/null 2>&1 &")
-end, { desc = "Open kitty in directory" })
+  os.execute("ghostty --working-directory=" .. vim.fn.shellescape(cwd) .. " > /dev/null 2>&1 &")
+end, { desc = "Open ghostty in directory" })
 
 -- UI/UX toggles ---------------------------------------------------------------
 
