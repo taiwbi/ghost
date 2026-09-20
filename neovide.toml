@@ -13,10 +13,12 @@ hinting = "full"
 edging = "antialias"
 
 [[font.normal]]
-family = "Elephant"
+family = "Dank Mono"
+style = "Bold"
 
 [[font.bold]]
-family = "Elephant"
+family = "Dank Mono"
+style = "ExtraBold"
 
 # fallback font
 [[font.normal]]
