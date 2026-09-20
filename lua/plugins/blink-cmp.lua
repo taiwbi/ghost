@@ -112,7 +112,11 @@ return {
         },
       },
       cmdline = {
-        keymap = { ["<End>"] = { "hide", "fallback" } },
+        keymap = {
+          preset = "cmdline",
+          ["<End>"] = { "hide", "fallback" },
+          ["<CR>"] = { "accept", "fallback" },
+        },
         completion = { ghost_text = { enabled = false } },
       },
       signature = {
