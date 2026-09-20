@@ -109,4 +109,10 @@ return {
     "vague-theme/vague.nvim",
     lazy = true,
   },
+  {
+    "wtfox/jellybeans.nvim",
+    lazy = false,
+    priority = 1000,
+    opts = {},
+  }
 }
