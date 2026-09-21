@@ -8,17 +8,15 @@ frame = "none"
 
 # --- Fonts ---
 [font]
-size = 13
+size = 12
 hinting = "full"
 edging = "antialias"
 
 [[font.normal]]
-family = "Dank Mono"
-style = "Bold"
+family = "Geist Mono"
 
 [[font.bold]]
-family = "Dank Mono"
-style = "ExtraBold"
+family = "Geist Mono"
 
 # fallback font
 [[font.normal]]
