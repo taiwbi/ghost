@@ -25,13 +25,8 @@ return {
     null_ls.setup {
       sources = {
         null_ls.builtins.formatting.blade_formatter.with {
-          command = "blade-formatter",
+          command = "blade-safe-formatter",
           args = {
-            "-i",
-            vim.opt.tabstop:get(),
-            "--sort-tailwindcss-classes",
-            "--indent-inner-html",
-            "--write",
             "$FILENAME",
           },
         },
