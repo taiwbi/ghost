@@ -111,8 +111,26 @@ return {
   },
   {
     "wtfox/jellybeans.nvim",
-    lazy = false,
+    lazy = true,
     priority = 1000,
     opts = {},
-  }
+  },
+  {
+    "datsfilipe/vesper.nvim",
+    lazy = false,
+    config = function()
+      require("vesper").setup {
+        transparent = false,
+        italics = {
+          comments = true,
+          keywords = true,
+          functions = true,
+          strings = false, -- Boolean: Italicizes strings
+          variables = true,
+        },
+        overrides = {}, -- A dictionary of group names, can be a function returning a dictionary or a table.
+        palette_overrides = {},
+      }
+    end,
+  },
 }

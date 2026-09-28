@@ -217,7 +217,7 @@ au("ColorScheme", {
 })
 
 vim.g.theme_sync = {
-  dark = { colorscheme = "catppuccin-mocha" },
+  dark = { colorscheme = "vesper" },
   light = { colorscheme = "catppuccin-latte" },
   highlights = {
     vague = {
