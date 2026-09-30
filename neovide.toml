@@ -13,10 +13,10 @@ hinting = "full"
 edging = "antialias"
 
 [[font.normal]]
-family = "Maple Mono"
+family = "Geist Mono"
 
 [[font.bold]]
-family = "Maple Mono"
+family = "Geist Mono"
 
 # fallback font
 [[font.normal]]
