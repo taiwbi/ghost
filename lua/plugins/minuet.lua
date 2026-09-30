@@ -88,11 +88,11 @@ return {
     },
     opts = {
       provider = "openai_compatible",
-      request_timeout = 3,
-      -- Delay requests enough to avoid one request per keystroke, while keeping
-      -- the ghost text responsive when you pause naturally.
-      throttle = 1800,
-      debounce = 700,
+      -- Let the model finish on slower routes and reduce waits or skipped
+      -- triggers after a recent request.
+      request_timeout = 5,
+      throttle = 600,
+      debounce = 350,
       -- 8,000 characters is roughly 2,000 tokens: enough local context for
       -- useful completions without sending a large slice of every buffer.
       context_window = 8000,
@@ -115,6 +115,9 @@ return {
       },
       virtualtext = {
         auto_trigger_ft = code_filetypes,
+        -- Blink often has its completion menu open while typing; keep Minuet's
+        -- ghost text visible alongside it instead of silently suppressing it.
+        show_on_completion_menu = true,
       },
       -- Duet is intentionally limited to code buffers and normal mode. This
       -- keeps edit predictions from competing with insert-mode ghost text or
