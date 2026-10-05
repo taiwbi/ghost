@@ -217,8 +217,8 @@ au("ColorScheme", {
 })
 
 vim.g.theme_sync = {
-  dark = { colorscheme = "catppuccin-mocha" },
-  light = { colorscheme = "catppuccin-latte" },
+  dark = { colorscheme = "gruvbox" },
+  light = { colorscheme = "gruvbox" },
   highlights = {
     vague = {
       dark = {
@@ -296,6 +296,19 @@ vim.g.theme_sync = {
     },
   },
 }
+
+au("OptionSet", {
+  group = augroup "gruvbox_contrast",
+  pattern = "background",
+  desc = "Match Gruvbox contrast to the editor background",
+  callback = function()
+    if vim.g.colors_name ~= "gruvbox" then return end
+    local ok, gruvbox = pcall(require, "gruvbox")
+    if not ok then return end
+    gruvbox.setup { contrast = vim.o.background == "dark" and "hard" or "soft" }
+    vim.cmd.colorscheme "gruvbox"
+  end,
+})
 
 local function sync_gnome_theme()
   local result = vim.fn.system "gsettings get org.gnome.desktop.interface color-scheme"

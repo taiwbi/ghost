@@ -28,7 +28,7 @@ return {
   {
     "catppuccin/nvim",
     name = "catppuccin",
-    lazy = false,
+    lazy = true,
     priority = 1000,
     config = function()
       require("catppuccin").setup {
@@ -73,9 +73,9 @@ return {
   { "shaunsingh/nord.nvim", lazy = true },
   {
     "ellisonleao/gruvbox.nvim",
-    lazy = true,
+    lazy = false,
     priority = 1000,
-    opts = {},
+    opts = { contrast = vim.o.background == "dark" and "hard" or "soft" },
   },
   {
     "AlexvZyl/nordic.nvim",
@@ -117,7 +117,7 @@ return {
   },
   {
     "datsfilipe/vesper.nvim",
-    lazy = false,
+    lazy = true,
     config = function()
       require("vesper").setup {
         transparent = false,

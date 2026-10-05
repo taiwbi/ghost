@@ -7,7 +7,24 @@ return {
       and "powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false"
       or "make",
   keys = {
-    { "<leader>ae", function() require("avante.api").edit() end, desc = "AI Edit", mode = { "n", "v" } },
+    {
+      "<leader>ae",
+      function()
+        local api = require "avante.api"
+        local config = require "avante.config"
+        -- Inline editing needs a code response, rather than an ACP agent session.
+        if config.acp_providers[config.provider] then
+          if not vim.env.OPENROUTER_API_KEY or vim.env.OPENROUTER_API_KEY == "" then
+            vim.notify("Avante inline editing requires OPENROUTER_API_KEY", vim.log.levels.ERROR)
+            return
+          end
+          api.switch_provider "openrouter"
+        end
+        api.edit()
+      end,
+      desc = "AI Edit",
+      mode = { "n", "v" },
+    },
     { "<leader>al", function() require("avante.api").ask() end, desc = "AI Ask", mode = { "n", "v" } },
     {
       "<leader>ac",
@@ -125,5 +142,29 @@ return {
     end
 
     require("avante").setup(opts)
+
+    -- Avante's selection parser replaces the selection with zero lines for
+    -- untagged chunks. Apply only a complete, successful code response.
+    local llm = require "avante.llm"
+    local stream = llm.stream
+    llm.stream = function(request)
+      if request.mode ~= "editing" then return stream(request) end
+
+      local chunks = {}
+      local on_chunk, on_stop = request.on_chunk, request.on_stop
+      request.on_chunk = function(chunk) chunks[#chunks + 1] = chunk end
+      request.on_stop = function(result)
+        if result.reason == "complete" and not result.error then
+          local code = table.concat(chunks):match("<code>(.-)</code>")
+          if code then
+            if on_chunk then on_chunk("<code>" .. code .. "</code>") end
+          else
+            vim.notify("Avante returned no replacement code; selection preserved", vim.log.levels.WARN)
+          end
+        end
+        if on_stop then return on_stop(result) end
+      end
+      return stream(request)
+    end
   end,
 }
