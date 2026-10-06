@@ -51,6 +51,10 @@ return {
   dependencies = {
     "nvim-lua/plenary.nvim",
     "MunifTanjim/nui.nvim",
+    {
+      "ColinKennedy/mega.cmdparse",
+      dependencies = { "ColinKennedy/mega.logging" },
+    },
     "saghen/blink.compat",
     "MeanderingProgrammer/render-markdown.nvim",
   },
