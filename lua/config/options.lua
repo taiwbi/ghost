@@ -3,6 +3,55 @@ local opt = vim.opt
 opt.backspace:append "nostop"
 opt.breakindent = true
 opt.clipboard = "unnamedplus"
+
+-- Prefer the active desktop's clipboard, including X11 sessions with stale Wayland variables.
+if
+  vim.env.XDG_SESSION_TYPE ~= "x11"
+  and vim.env.WAYLAND_DISPLAY
+  and vim.env.WAYLAND_DISPLAY ~= ""
+  and vim.fn.executable "wl-copy" == 1
+  and vim.fn.executable "wl-paste" == 1
+then
+  vim.g.clipboard = {
+    name = "wl-copy",
+    copy = {
+      ["+"] = { "wl-copy", "--type", "text/plain" },
+      ["*"] = { "wl-copy", "--primary", "--type", "text/plain" },
+    },
+    paste = {
+      ["+"] = { "wl-paste", "--no-newline" },
+      ["*"] = { "wl-paste", "--no-newline", "--primary" },
+    },
+    cache_enabled = 1,
+  }
+elseif vim.env.DISPLAY and vim.env.DISPLAY ~= "" and vim.fn.executable "xclip" == 1 then
+  vim.g.clipboard = {
+    name = "xclip",
+    copy = {
+      ["+"] = { "xclip", "-quiet", "-i", "-selection", "clipboard" },
+      ["*"] = { "xclip", "-quiet", "-i", "-selection", "primary" },
+    },
+    paste = {
+      ["+"] = { "xclip", "-o", "-selection", "clipboard" },
+      ["*"] = { "xclip", "-o", "-selection", "primary" },
+    },
+    cache_enabled = 1,
+  }
+elseif vim.env.DISPLAY and vim.env.DISPLAY ~= "" and vim.fn.executable "xsel" == 1 then
+  vim.g.clipboard = {
+    name = "xsel",
+    copy = {
+      ["+"] = { "xsel", "--nodetach", "-i", "-b" },
+      ["*"] = { "xsel", "--nodetach", "-i", "-p" },
+    },
+    paste = {
+      ["+"] = { "xsel", "-o", "-b" },
+      ["*"] = { "xsel", "-o", "-p" },
+    },
+    cache_enabled = 1,
+  }
+end
+
 opt.cmdheight = 0
 opt.completeopt = { "menu", "menuone", "noselect" }
 opt.confirm = true
