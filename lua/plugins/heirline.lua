@@ -313,12 +313,11 @@ return {
   opts = function()
     return {
       opts = {
-        -- Oil renders confirmation actions on the last row of its preview float.
         -- Scratch windows (including native diagnostic floats) should not get
         -- an empty breadcrumb row above their content. Noice popups already
         -- clear their winbar, so this keeps native floats visually consistent.
         disable_winbar_cb = function(args)
-          return vim.bo[args.buf].buftype == "nofile" or vim.bo[args.buf].filetype == "oil_preview"
+          return vim.bo[args.buf].buftype == "nofile"
         end,
       },
       statusline = {

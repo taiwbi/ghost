@@ -126,9 +126,9 @@ map("n", "[l", "<Cmd>lprev<CR>", { desc = "Previous location entry" })
 map("n", "]L", "<Cmd>llast<CR>", { desc = "Last location entry" })
 map("n", "[L", "<Cmd>lfirst<CR>", { desc = "First location entry" })
 
--- File explorer (oil.nvim) ----------------------------------------------------
+-- File explorer (nvim-tree) ---------------------------------------------------
 
-map("n", "<Leader>e", "<Cmd>Oil .<CR>", { desc = "Open Oil in current directory" })
+map("n", "<Leader>e", "<Cmd>NvimTreeToggle<CR>", { desc = "Toggle file tree" })
 
 -- Dashboard -------------------------------------------------------------------
 

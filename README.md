@@ -11,7 +11,7 @@ Laravel · Rust · Python — crafted with obsession over every UI detail.
 - **LSP:** native `vim.lsp.config` / `vim.lsp.enable` driven by nvim-lspconfig and mason-lspconfig
 - **Completion:** [blink.cmp](https://github.com/Saghen/blink.cmp) (LuaSnip + friendly-snippets)
 - **AI completion:** [minuet-ai.nvim](https://github.com/milanglacier/minuet-ai.nvim) virtual text via OpenRouter
-- **File explorer:** [oil.nvim](https://github.com/stevearc/oil.nvim)
+- **File tree:** [nvim-tree.lua](https://github.com/nvim-tree/nvim-tree.lua)
 - **Picker / dashboard:** [snacks.nvim](https://github.com/folke/snacks.nvim)
 - **Statusline:** [heirline.nvim](https://github.com/rebelot/heirline.nvim)
 - **Syntax:** [nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter)

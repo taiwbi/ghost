@@ -82,11 +82,11 @@ Minuet uses virtual text for inline suggestions. It reads the OpenRouter key fro
 | Predict / apply / dismiss next edit (Duet) | `Leader + m p` / `Leader + m a` / `Leader + m d` |
 | Enable/disable automatic next-edit prediction (Duet, off by default) | `Leader + m t` |
 
-## File Explorer (oil.nvim)
+## File Tree (nvim-tree.lua)
 
-| Action                            | Mapping      |
-| --------------------------------- | ------------ |
-| Open Oil in the current directory | `Leader + e` |
+| Action          | Mapping      |
+| --------------- | ------------ |
+| Toggle file tree | `Leader + e` |
 
 ## Dashboard
 
