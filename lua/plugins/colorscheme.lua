@@ -69,7 +69,7 @@ return {
       },
     },
   },
-  { "dgox16/oldworld.nvim", lazy = true, priority = 1000 },
+  { "dgox16/oldworld.nvim", lazy = false, priority = 1000 },
   { "shaunsingh/nord.nvim", lazy = true },
   {
     "ellisonleao/gruvbox.nvim",
