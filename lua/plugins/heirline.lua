@@ -321,7 +321,9 @@ return {
         end,
       },
       statusline = {
-        hl = function() return { fg = get_hl("Normal", "fg") or "fg", bg = get_hl("StatusLine", "bg") or "bg" } end,
+        -- Missing colors should stay unset. The strings "fg" and "bg" are
+        -- not color values accepted by nvim_set_hl.
+        hl = function() return { fg = get_hl("Normal", "fg"), bg = get_hl("StatusLine", "bg") } end,
         mode_block,
         file_info,
         git_branch,
@@ -338,8 +340,8 @@ return {
       winbar = {
         hl = function()
           return {
-            fg = get_hl("WinBar", "fg") or get_hl("Normal", "fg") or "fg",
-            bg = get_hl("WinBar", "bg") or get_hl("Normal", "bg") or "bg",
+            fg = get_hl("WinBar", "fg") or get_hl("Normal", "fg"),
+            bg = get_hl("WinBar", "bg") or get_hl("Normal", "bg"),
           }
         end,
         lsp_breadcrumbs(),
