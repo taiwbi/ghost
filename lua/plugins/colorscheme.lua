@@ -28,34 +28,9 @@ return {
   {
     "catppuccin/nvim",
     name = "catppuccin",
-    lazy = true,
+    lazy = false,
     priority = 1000,
-    config = function()
-      require("catppuccin").setup {
-        color_overrides = {
-          mocha = {
-            base = "#171717",
-            mantle = "#151515",
-            crust = "#090909",
-          },
-          macchiato = {
-            base = "#191919",
-            mantle = "#171717",
-            crust = "#111111",
-          },
-          frappe = {
-            base = "#212121",
-            mantle = "#191919",
-            crust = "#141414",
-          },
-          latte = {
-            base = "#d4d4c5",
-            mantle = "#cac9bc",
-            crust = "#c4c3b6",
-          },
-        },
-      }
-    end,
+    config = function() require("catppuccin").setup {} end,
   },
   { "rose-pine/neovim", name = "rose-pine", lazy = true },
   {
@@ -69,11 +44,11 @@ return {
       },
     },
   },
-  { "dgox16/oldworld.nvim", lazy = false, priority = 1000 },
+  { "dgox16/oldworld.nvim", lazy = true, priority = 1000 },
   { "shaunsingh/nord.nvim", lazy = true },
   {
     "ellisonleao/gruvbox.nvim",
-    lazy = false,
+    lazy = true,
     priority = 1000,
     opts = { contrast = vim.o.background == "dark" and "hard" or "soft" },
   },
