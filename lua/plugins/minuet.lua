@@ -88,26 +88,42 @@ return {
     },
     opts = {
       provider = "openai_compatible",
-      -- Let the model finish on slower routes and reduce waits or skipped
-      -- triggers after a recent request.
-      request_timeout = 5,
-      throttle = 600,
-      debounce = 350,
-      -- 8,000 characters is roughly 2,000 tokens: enough local context for
-      -- useful completions without sending a large slice of every buffer.
-      context_window = 8000,
+      -- Give local inference time to return, while triggering after a short
+      -- pause in typing. Keep the context modest for this small model.
+      request_timeout = 15,
+      throttle = 800,
+      debounce = 180,
+      context_window = 4000,
+      n_completions = 1,
       enable_predicates = {
         function() return vim.bo.buftype == "" and vim.bo.modifiable end,
       },
       provider_options = {
         openai_compatible = {
-          api_key = "OPENROUTER_API_KEY",
-          end_point = "https://openrouter.ai/api/v1/chat/completions",
-          model = "deepseek/deepseek-v4-flash-0731",
-          name = "OpenRouter",
+          -- Ollama's OpenAI-compatible endpoint accepts any non-empty key.
+          api_key = function() return "ollama" end,
+          end_point = "http://localhost:11434/v1/chat/completions",
+          model = "deepseek-coder:1.3b",
+          name = "Ollama",
+          system = {
+            template = "{{{prompt}}}\n{{{guidelines}}}\n{{{n_completion_template}}}",
+            prompt = [[
+You are an inline code completion engine. The input contains the text before and after the cursor, plus the file language.
+Return only the exact text to insert at <cursorPosition>, continuing the existing code in that language.
+]],
+            guidelines = [[
+Rules:
+1. Output only the code or text to insert. Do not explain your answer.
+2. Never output Markdown, triple backticks, a language label, or a code fence.
+3. Do not repeat text already present before or after the cursor.
+4. Preserve the existing indentation and style. Keep the completion short and useful.
+]],
+            n_completion_template = "Return at most %d completion.",
+          },
           optional = {
             max_tokens = 56,
             top_p = 0.9,
+            temperature = 0.1,
             provider = { sort = "throughput" },
             reasoning_effort = "none",
           },
@@ -127,13 +143,12 @@ return {
         request_timeout = 12,
         provider_options = {
           openai_compatible = {
-            api_key = "OPENROUTER_API_KEY",
-            end_point = "https://openrouter.ai/api/v1/chat/completions",
-            model = "deepseek/deepseek-v4-flash-0731",
-            name = "OpenRouter",
+            api_key = function() return "ollama" end,
+            end_point = "http://localhost:11434/v1/chat/completions",
+            model = "deepseek-coder:1.3b",
+            name = "Ollama",
             optional = {
-              reasoning_effort = "none",
-              provider = { sort = "throughput" },
+              temperature = 0.1,
             },
           },
         },
