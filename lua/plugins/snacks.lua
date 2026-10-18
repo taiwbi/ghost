@@ -11,6 +11,7 @@ return {
     input = { enabled = true },
     notifier = { enabled = true },
     image = { doc = { enabled = true } },
+    scroll = { enabled = true },
     styles = {
       float = {
         backdrop = 100,
