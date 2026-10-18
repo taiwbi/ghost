@@ -156,6 +156,13 @@ return {
           padding = { 1, 0 },
         },
         { pane = 1, section = "startup" },
+        {
+          pane = 2,
+          section = "image",
+          height = 12,
+          padding = 0,
+          path = os.getenv "HOME" .. "/.config/nvim/assets/sword-master.png",
+        },
       },
     },
   },

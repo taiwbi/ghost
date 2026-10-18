@@ -1,6 +1,7 @@
 return {
   "folke/noice.nvim",
-  event = "VeryLazy",
+  -- Initialize before Snacks paints Kitty graphics on the startup dashboard.
+  event = "UIEnter",
   opts = {
     notify = {
       enabled = true,
