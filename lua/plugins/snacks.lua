@@ -112,6 +112,7 @@ return {
       },
     },
     dashboard = {
+      pane_align = "center",
       preset = {
         header = {
           {
@@ -159,9 +160,10 @@ return {
         {
           pane = 2,
           section = "image",
-          height = 12,
+          path = vim.fn.stdpath "config" .. "/assets/sword-master.png",
+          height = 18,
+          align = "center",
           padding = 0,
-          path = os.getenv "HOME" .. "/.config/nvim/assets/sword-master.png",
         },
       },
     },
