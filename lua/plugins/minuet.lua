@@ -22,6 +22,25 @@ local code_filetypes = {
   "blade",
 }
 
+local function accept_and_continue(n_lines)
+  local action = require("minuet.virtualtext").action
+  if not action.is_visible() then return end
+
+  local bufnr = vim.api.nvim_get_current_buf()
+  local changedtick = vim.api.nvim_buf_get_changedtick(bufnr)
+  action.accept(n_lines)
+
+  -- Let Minuet's scheduled insertion and cursor events finish first.
+  vim.defer_fn(function()
+    if vim.api.nvim_get_current_buf() ~= bufnr or vim.fn.mode() ~= "i" then return end
+    if vim.api.nvim_buf_get_changedtick(bufnr) == changedtick then return end
+    -- Line acceptance keeps the rest of a multi-line suggestion available.
+    if n_lines and action.is_visible() then return end
+    action.dismiss() -- Cancel any pending automatic request before continuing.
+    action.next()
+  end, 10)
+end
+
 return {
   {
     "milanglacier/minuet-ai.nvim",
@@ -29,16 +48,20 @@ return {
     -- file opened by Neovim. No network request is made until a suggestion is
     -- actually requested.
     lazy = false,
+    config = function(_, opts)
+      require("minuet").setup(opts)
+      require("util.minuet_completion").install()
+    end,
     keys = {
       {
         "<A-l>",
-        function() require("minuet.virtualtext").action.accept() end,
+        function() accept_and_continue() end,
         mode = "i",
         desc = "Accept AI completion",
       },
       {
         "<A-k>",
-        function() require("minuet.virtualtext").action.accept_line() end,
+        function() accept_and_continue(1) end,
         mode = "i",
         desc = "Accept AI completion line",
       },
@@ -87,45 +110,50 @@ return {
       },
     },
     opts = {
-      provider = "openai_compatible",
-      -- Give local inference time to return, while triggering after a short
-      -- pause in typing. Keep the context modest for this small model.
-      request_timeout = 15,
-      throttle = 800,
-      debounce = 180,
-      context_window = 4000,
+      provider = "openai_fim_compatible",
+      -- Keep surrounding code visible to FIM, especially the existing suffix.
+      -- context_window is characters, not tokens.
+      -- Streaming lets Minuet salvage partial output if inference hits the timeout.
+      request_timeout = 5,
+      throttle = 150,
+      debounce = 75,
+      context_window = 2048,
+      context_ratio = 0.65,
+      -- The local guard removes duplicates without trimming FIM whitespace.
+      before_cursor_filter_length = 0,
+      after_cursor_filter_length = 0,
       n_completions = 1,
       enable_predicates = {
         function() return vim.bo.buftype == "" and vim.bo.modifiable end,
       },
       provider_options = {
-        openai_compatible = {
-          -- Ollama's OpenAI-compatible endpoint accepts any non-empty key.
+        openai_fim_compatible = {
+          -- Minuet requires a key even though local Ollama does not use it.
           api_key = function() return "ollama" end,
-          end_point = "http://localhost:11434/v1/chat/completions",
+          end_point = "http://localhost:11434/api/generate",
           model = "deepseek-coder:1.3b",
           name = "Ollama",
-          system = {
-            template = "{{{prompt}}}\n{{{guidelines}}}\n{{{n_completion_template}}}",
-            prompt = [[
-You are an inline code completion engine. The input contains the text before and after the cursor, plus the file language.
-Return only the exact text to insert at <cursorPosition>, continuing the existing code in that language.
-]],
-            guidelines = [[
-Rules:
-1. Output only the code or text to insert. Do not explain your answer.
-2. Never output Markdown, triple backticks, a language label, or a code fence.
-3. Do not repeat text already present before or after the cursor.
-4. Preserve the existing indentation and style. Keep the completion short and useful.
-]],
-            n_completion_template = "Return at most %d completion.",
+          stream = true,
+          -- Bypass the model's chat template: raw DeepSeek FIM needs only code.
+          template = {
+            prompt = function(before, after)
+              return "<｜fim▁begin｜>" .. before .. "<｜fim▁hole｜>" .. after .. "<｜fim▁end｜>"
+            end,
+            suffix = false,
+          },
+          -- Ollama streams NDJSON with `response`, rather than OpenAI choices.
+          get_text_fn = {
+            stream = function(json) return json.response end,
           },
           optional = {
-            max_tokens = 56,
-            top_p = 0.9,
-            temperature = 0.1,
-            provider = { sort = "throughput" },
-            reasoning_effort = "none",
+            raw = true,
+            keep_alive = "30m",
+            options = {
+              num_ctx = 2048,
+              num_predict = 64,
+              temperature = 0,
+              stop = { "<｜fim▁begin｜>", "<｜fim▁hole｜>", "<｜fim▁end｜>", "<|EOT|>" },
+            },
           },
         },
       },
