@@ -114,7 +114,7 @@ return {
       -- Keep surrounding code visible to FIM, especially the existing suffix.
       -- context_window is characters, not tokens.
       -- Streaming lets Minuet salvage partial output if inference hits the timeout.
-      request_timeout = 5,
+      request_timeout = 60,
       throttle = 150,
       debounce = 75,
       context_window = 2048,
