@@ -3,6 +3,129 @@ local contexts = require "util.minuet_context"
 
 local installed = setmetatable({}, { __mode = "k" })
 
+local function node_issues(root, bufnr)
+  local issues = {}
+
+  local function visit(node)
+    local missing = node:missing()
+    if missing or node:type() == "ERROR" then
+      local _, _, _, _, start_byte, end_byte = node:range(true)
+      local text = missing and "" or vim.treesitter.get_node_text(node, bufnr)
+      issues[table.concat({ node:type(), start_byte, end_byte, missing and "missing" or "error", text }, "\0")] = {
+        start_byte = start_byte,
+        end_byte = end_byte,
+        type = node:type(),
+        missing = missing,
+        text = text,
+      }
+    end
+
+    for child in node:iter_children() do
+      visit(child)
+    end
+  end
+
+  visit(root)
+  return issues
+end
+
+local function issue_key(issue, start_byte, end_byte)
+  return table.concat({ issue.type, start_byte, end_byte, issue.missing and "missing" or "error", issue.text }, "\0")
+end
+
+local function validation_snapshot(context)
+  local bufnr = vim.api.nvim_get_current_buf()
+  local cursor = vim.api.nvim_win_get_cursor(0)
+  local row, col = cursor[1] - 1, cursor[2]
+  local line = vim.api.nvim_buf_get_lines(bufnr, row, row + 1, false)[1] or ""
+  if not context.lines_before or context.lines_before:match "[^\n]*$" ~= line:sub(1, col) then return end
+  if (context.lines_after or ""):match "^[^\n]*" ~= line:sub(col + 1) then return end
+
+  local ok, parser = pcall(vim.treesitter.get_parser, bufnr)
+  if not ok or not parser then return end
+  local parsed, trees = pcall(parser.parse, parser)
+  if not parsed or not trees or not trees[1] then return end
+
+  local lines = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
+  local offset = col
+  for i = 1, row do
+    offset = offset + #(lines[i] or "") + 1
+  end
+
+  local root = trees[1]:root()
+  return {
+    lines = lines,
+    row = row,
+    col = col,
+    offset = offset,
+    filetype = vim.bo[bufnr].filetype,
+    language = parser:lang(),
+    issues = node_issues(root, bufnr),
+  }
+end
+
+local function parses_without_new_issues(text, snapshot)
+  local source = table.concat(snapshot.lines, "\n")
+  local candidate = source:sub(1, snapshot.offset) .. text .. source:sub(snapshot.offset + 1)
+  local insert_start = snapshot.offset
+  local insert_end = insert_start + #text
+  local scratch = vim.api.nvim_create_buf(false, true)
+
+  local ok, valid = pcall(function()
+    vim.bo[scratch].buftype = "nofile"
+    vim.bo[scratch].bufhidden = "wipe"
+    vim.bo[scratch].swapfile = false
+    vim.bo[scratch].filetype = snapshot.filetype
+    vim.api.nvim_buf_set_lines(scratch, 0, -1, false, vim.split(candidate, "\n", { plain = true }))
+
+    local parser = vim.treesitter.get_parser(scratch, snapshot.language)
+    local trees = parser:parse()
+    if not trees or not trees[1] then return false end
+
+    for _, issue in pairs(node_issues(trees[1]:root(), scratch)) do
+      local start_byte, end_byte = issue.start_byte, issue.end_byte
+      local in_inserted_text = start_byte < insert_end and end_byte > insert_start
+      if start_byte == end_byte and start_byte >= insert_start and start_byte <= insert_end then
+        in_inserted_text = true
+      end
+
+      if not in_inserted_text then
+        if start_byte >= insert_end then
+          start_byte, end_byte = start_byte - #text, end_byte - #text
+        elseif end_byte > insert_start then
+          -- An error spanning the insertion cannot be inherited unchanged.
+          return false
+        end
+      end
+
+      if in_inserted_text or not snapshot.issues[issue_key(issue, start_byte, end_byte)] then return false end
+    end
+    return true
+  end)
+
+  if vim.api.nvim_buf_is_valid(scratch) then vim.api.nvim_buf_delete(scratch, { force = true }) end
+  return ok and valid == true
+end
+
+local function keep_parseable_prefix(text, snapshot)
+  if not snapshot then return text end
+  local ok, valid = pcall(parses_without_new_issues, text, snapshot)
+  if not ok then return text end
+  if valid then return text end
+
+  for newline = #text, 1, -1 do
+    if text:sub(newline, newline) == "\n" then
+      local finish = newline - 1
+      if text:sub(finish, finish) == "\r" then finish = finish - 1 end
+      local prefix = text:sub(1, finish)
+      if prefix:find "%S" then
+        local checked, prefix_valid = pcall(parses_without_new_issues, prefix, snapshot)
+        if checked and prefix_valid then return prefix end
+      end
+    end
+  end
+end
+
 -- The first suffix line is only the remainder of the cursor's current line.
 -- Anchor on the next two nonblank lines, keeping their indentation and blanks.
 local function suffix_block(context)
@@ -69,6 +192,8 @@ function M.filter(text, context)
   -- cursor line is indentation, so leave its completion spacing untouched.
   local before_line = (context.lines_before or ""):match "[^\n]*$"
   if before_line:sub(-1) == " " and before_line:find "%S" then text = text:gsub("^ +", "") end
+  text = keep_parseable_prefix(text, context.validation)
+  if not text then return end
   if text:find "%S" then return text end
 end
 
@@ -85,6 +210,7 @@ function M.install()
       lines_before = context.lines_before,
       lines_after = context.lines_after,
       scope = contexts.capture(context),
+      validation = validation_snapshot(context),
       opts = { is_incomplete_after = context.opts and context.opts.is_incomplete_after },
     }
     return complete(context, function(items)
