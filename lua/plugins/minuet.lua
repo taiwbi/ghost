@@ -117,7 +117,7 @@ return {
       request_timeout = 60,
       throttle = 150,
       debounce = 75,
-      context_window = 2048,
+      context_window = 1024,
       context_ratio = 0.65,
       -- The local guard removes duplicates without trimming FIM whitespace.
       before_cursor_filter_length = 0,
@@ -128,32 +128,50 @@ return {
       },
       provider_options = {
         openai_fim_compatible = {
-          -- Minuet requires a key even though local Ollama does not use it.
-          api_key = function() return "ollama" end,
-          end_point = "http://localhost:11434/api/generate",
-          model = "deepseek-coder:1.3b",
-          name = "Ollama",
+          api_key = function()
+            local file = io.open(vim.fn.expand("~/.keys/DEEPINFRA"), "r")
+            if not file then return nil end
+            local key = file:read("*all"):gsub("%s+", "")
+            file:close()
+            return key ~= "" and key or nil
+          end,
+          end_point = "https://api.deepinfra.com/v1/inference/",
+          model = "Qwen/Qwen3-Coder-480B-A35B-Instruct-Turbo",
+          name = "DeepInfra",
           stream = true,
-          -- Bypass the model's chat template: raw DeepSeek FIM needs only code.
           template = {
             prompt = function(before, after)
-              return "<｜fim▁begin｜>" .. before .. "<｜fim▁hole｜>" .. after .. "<｜fim▁end｜>"
+              local utils = require("minuet.utils")
+              return "<|fim_prefix|>"
+                .. utils.add_language_comment()
+                .. "\n"
+                .. utils.add_tab_comment()
+                .. "\n"
+                .. before
+                .. "<|fim_suffix|>"
+                .. after
+                .. "<|fim_middle|>"
             end,
+            -- DeepInfra's inference endpoint expects Qwen's FIM markers in input.
             suffix = false,
           },
-          -- Ollama streams NDJSON with `response`, rather than OpenAI choices.
+          transform = {
+            function(args)
+              args.end_point = args.end_point .. args.body.model
+              args.body.input = args.body.prompt
+              args.body.model = nil
+              args.body.prompt = nil
+              return args
+            end,
+          },
           get_text_fn = {
-            stream = function(json) return json.response end,
+            no_stream = function(json) return json.results[1].generated_text end,
+            stream = function(json) return json.token.text end,
           },
           optional = {
-            raw = true,
-            keep_alive = "30m",
-            options = {
-              num_ctx = 2048,
-              num_predict = 64,
-              temperature = 0,
-              stop = { "<｜fim▁begin｜>", "<｜fim▁hole｜>", "<｜fim▁end｜>", "<|EOT|>" },
-            },
+            max_tokens = 32,
+            temperature = 0,
+            stop = { "<|endoftext|>" },
           },
         },
       },
