@@ -1,38 +1,8 @@
+-- Removed themes (tried and didn't like):
+-- bamboo.nvim, kanagawa.nvim, bearded-theme.nvim, catppuccin, rose-pine,
+-- nord.nvim, nordic.nvim, min-theme.nvim, dancheong.nvim, onedark.nvim,
+-- oxocarbon.nvim, vesper.nvim
 return {
-  {
-    "ribru17/bamboo.nvim",
-    lazy = true,
-    priority = 1000,
-    config = function()
-      require("bamboo").setup()
-      require("bamboo").load()
-    end,
-  },
-  {
-    "rebelot/kanagawa.nvim",
-    lazy = true,
-    priority = 1000,
-    config = function()
-      require("kanagawa").setup {
-        commentStyle = { italic = true },
-        keywordStyle = { italic = true },
-        statementStyle = { bold = true },
-      }
-    end,
-  },
-  {
-    "taiwbi/bearded-theme.nvim",
-    lazy = true,
-    config = function() vim.g.bearded_variant = "monokai_stone" end,
-  },
-  {
-    "catppuccin/nvim",
-    name = "catppuccin",
-    lazy = false,
-    priority = 1000,
-    config = function() require("catppuccin").setup {} end,
-  },
-  { "rose-pine/neovim", name = "rose-pine", lazy = true },
   {
     "scottmckendry/cyberdream.nvim",
     lazy = true,
@@ -45,7 +15,6 @@ return {
     },
   },
   { "dgox16/oldworld.nvim", lazy = true, priority = 1000 },
-  { "shaunsingh/nord.nvim", lazy = true },
   {
     "ellisonleao/gruvbox.nvim",
     lazy = true,
@@ -53,32 +22,10 @@ return {
     opts = { contrast = vim.o.background == "dark" and "hard" or "soft" },
   },
   {
-    "AlexvZyl/nordic.nvim",
-    lazy = true,
-    priority = 1000,
-    config = function() require("nordic").load() end,
-  },
-  {
     "zenbones-theme/zenbones.nvim",
     lazy = true,
     dependencies = "rktjmp/lush.nvim",
     priority = 1000,
-  },
-  { "datsfilipe/min-theme.nvim", lazy = true },
-  {
-    "art220/dancheong.nvim",
-    lazy = true,
-    priority = 1000,
-  },
-  {
-    "navarasu/onedark.nvim",
-    priority = 1000,
-    lazy = true,
-  },
-  {
-    "nyoom-engineering/oxocarbon.nvim",
-    lazy = true,
-    build = false,
   },
   {
     "vague-theme/vague.nvim",
@@ -86,26 +33,8 @@ return {
   },
   {
     "wtfox/jellybeans.nvim",
-    lazy = true,
+    lazy = false,
     priority = 1000,
     opts = {},
-  },
-  {
-    "datsfilipe/vesper.nvim",
-    lazy = true,
-    config = function()
-      require("vesper").setup {
-        transparent = false,
-        italics = {
-          comments = true,
-          keywords = true,
-          functions = true,
-          strings = false, -- Boolean: Italicizes strings
-          variables = true,
-        },
-        overrides = {}, -- A dictionary of group names, can be a function returning a dictionary or a table.
-        palette_overrides = {},
-      }
-    end,
   },
 }
